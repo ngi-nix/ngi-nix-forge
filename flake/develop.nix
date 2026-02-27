@@ -19,6 +19,7 @@
 
           inputs.elm2nix.packages.${system}.default
           elmPackages.elm
+          elmPackages.elm-language-server
         ];
 
         shellHook =
