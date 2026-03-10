@@ -6,7 +6,7 @@
   # Import the core forge modules
   imports = [
     ./modules/forge.nix
-    ./modules/apps.nix
+    ./modules/apps
     ./modules/packages.nix
     ./packages.nix # Generates _forge-config, _forge-options, _forge-ui
   ];

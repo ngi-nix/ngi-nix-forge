@@ -11,7 +11,7 @@ let
 in
 {
   imports = [
-    ./assertions-warnings.nix
+    ../assertions-warnings.nix
   ];
 
   options = {
@@ -32,7 +32,7 @@ in
             apps = lib.mkOption {
               default = [ ];
               description = "List of applications.";
-              type = lib.types.listOf (lib.types.submodule ./app-item.nix);
+              type = lib.types.listOf (lib.types.submodule ./app.nix);
             };
           };
         };

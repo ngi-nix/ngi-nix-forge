@@ -46,7 +46,7 @@
         };
 
         _forge-options = optionsDoc [
-          ./modules/apps.nix
+          ./modules/apps
           ./modules/packages.nix
         ];
 
