@@ -1,6 +1,7 @@
 {
   buildElmApplication,
   fetchzip,
+  jq,
   symlinkJoin,
 
   _forge-config,
@@ -34,19 +35,29 @@ symlinkJoin {
     main
   ];
   postBuild = ''
+    pushd $out
+
     # Copy static files
-    cp ${./src/index.html} $out/index.html
-    mkdir -p $out/resources
-    chmod -R u+w $out/resources
-    cp ${bootstrapCss}/css/bootstrap.min.css $out/resources/bootstrap.min.css
-    cp ${agentsFile} $out/resources/AGENTS.md
+    cp ${./src/index.html} index.html
+    mkdir -p resources
+    chmod -R u+w resources
+    cp ${bootstrapCss}/css/bootstrap.min.css resources/bootstrap.min.css
+    cp ${agentsFile} resources/AGENTS.md
 
     # Symlink config files
-    ln -s ${_forge-config} $out/forge-config.json
+    ln -s ${_forge-config} forge-config.json
 
     # Rename minimized Elm outputs
-    mv $out/main.min.js $out/main.js
-    ln -s $out/main.js $out/Elm.js
+    mv main.min.js main.js
+    ln -s main.js Elm.js
+
+    # github pages SPA workaround for routing
+    for app in $(${jq}/bin/jq '.apps.[].name' -r forge-config.json); do
+      mkdir -p "app/$app"
+      ln -s $out/index.html "app/$app/index.html"
+    done
+
+    popd
   '';
   passthru = { inherit bootstrapCss; };
 }
