@@ -1,8 +1,8 @@
 module Main.Select.View exposing (..)
 
-import Html exposing (Html, button, div, hr, input, text)
+import Html exposing (Html, div, hr, input, text)
 import Html.Attributes exposing (class, placeholder, value)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onInput)
 import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Route exposing (..)
@@ -12,8 +12,8 @@ import Main.Select.View.Applications exposing (..)
 import Main.Select.View.Instructions exposing (..)
 
 
-viewSelect : ModelSelect -> Html UpdateSelect
-viewSelect model =
+viewer : ModelSelect -> Html UpdateSelect
+viewer model =
     div [ class "container" ]
         -- header
         [ div [ class "row" ]
@@ -32,12 +32,12 @@ viewSelect model =
                     [ class "name d-flex gap-2 justify-content-between align-items-center"
                     ]
                     [ div [ class "flex-grow-1" ]
-                        (viewSearch model.searchString)
+                        (viewerSearch model.searchString)
                     ]
                 , div
                     [ class "list-group flex-wrap flex-row gap-2 justify-content-between"
                     ]
-                    (viewApps model.apps model.selectedApp model.searchString)
+                    (viewerApps model.apps model.selectedApp model.searchString)
 
                 -- error message
                 , case model.error of
@@ -77,8 +77,8 @@ viewSelect model =
         ]
 
 
-viewSearch : String -> List (Html UpdateSelect)
-viewSearch searchString =
+viewerSearch : String -> List (Html UpdateSelect)
+viewerSearch searchString =
     [ input
         [ class "form-control form-control-lg py-2 my-2"
         , placeholder "Search applications by name"

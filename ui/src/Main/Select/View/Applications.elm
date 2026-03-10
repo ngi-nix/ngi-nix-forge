@@ -12,16 +12,16 @@ import Main.Select.Update exposing (..)
 import Main.Select.View.Instructions exposing (..)
 
 
-viewApps : Dict String App -> Maybe App -> String -> List (Html UpdateSelect)
-viewApps apps selectedApp filter =
+viewerApps : Dict String App -> Maybe App -> String -> List (Html UpdateSelect)
+viewerApps apps selectedApp filter =
     apps
         |> Dict.filter (\name app -> String.contains filter name)
         |> Dict.values
-        |> List.map (\app -> viewApp app selectedApp)
+        |> List.map (\app -> viewerApp app selectedApp)
 
 
-viewApp : App -> Maybe App -> Html UpdateSelect
-viewApp app selectedApp =
+viewerApp : App -> Maybe App -> Html UpdateSelect
+viewerApp app selectedApp =
     a
         [ href ("/app/" ++ App.unAppName app.name)
         , class

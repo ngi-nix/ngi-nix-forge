@@ -1,49 +1,63 @@
 module Main.Update exposing (..)
 
+import AppUrl
 import Browser
 import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Model exposing (..)
-import Main.Route exposing (..)
+import Main.Route as Route exposing (..)
 import Main.Select exposing (..)
-import Main.Select.Model exposing (..)
-import Main.Select.Update exposing (..)
+import Main.Select.Model as Select exposing (..)
+import Main.Select.Update as Select exposing (..)
 import Url
 
 
 type Update
     = Update_Select UpdateSelect
+    | Update_Route Route
     | Update_UrlChange Url.Url
     | Update_LinkClicked Browser.UrlRequest
 
 
+runUpdater : (model -> Model) -> (update -> Update) -> Model -> Updater model update -> ( Model, Cmd Update )
+runUpdater model_ update_ model upd =
+    case upd of
+        Updater_Cmd ( newModel, newCmd ) ->
+            ( model_ newModel, newCmd |> Cmd.map update_ )
+
+        Updater_Model newModel ->
+            ( model_ newModel, Cmd.none )
+
+        Updater_Route route_ ->
+            model |> update (Update_Route route_)
+
+
 update : Update -> Model -> ( Model, Cmd Update )
-update upd currentModel =
-    case ( upd, currentModel ) of
-        ( Update_Select up, Model_Select currentModelSelect ) ->
-            case updateSelect up currentModelSelect of
-                Updater_Model newModel ->
-                    ( Model_Select newModel, Cmd.none )
+update upd model =
+    case upd of
+        Update_Route route ->
+            case route of
+                Route_Select routeSelect ->
+                    case model of
+                        Model_Select modelSelect ->
+                            modelSelect
+                                |> Select.router routeSelect
+                                |> runUpdater Model_Select Update_Select model
 
-                Updater_Route newRoute ->
-                    initRoute newRoute
+        Update_Select up ->
+            case model of
+                Model_Select modelSelect ->
+                    modelSelect
+                        |> Select.updater up
+                        |> runUpdater Model_Select Update_Select model
 
-                Updater_Cmd ( newModel, newCmd ) ->
-                    ( Model_Select newModel, Cmd.map Update_Select newCmd )
+        Update_LinkClicked (Browser.Internal url) ->
+            case url |> AppUrl.fromUrl |> Route.fromAppUrl of
+                Nothing ->
+                    ( model, Cmd.none )
 
-        ( Update_LinkClicked url, _ ) ->
-            ( currentModel, Cmd.none )
+                Just route ->
+                    model |> update (Update_Route route)
 
         _ ->
-            ( currentModel, Cmd.none )
-
-
-initRoute : Route -> ( Model, Cmd Update )
-initRoute route =
-    case route of
-        Route_Select rt ->
-            case initSelect () of
-                ( initModel, initCmd ) ->
-                    case routeSelect rt initModel of
-                        ( newModel, newCmd ) ->
-                            ( Model_Select newModel, [ Cmd.map Update_Select initCmd, Cmd.map Update_Select newCmd ] |> Cmd.batch )
+            ( model, Cmd.none )

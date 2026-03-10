@@ -9,8 +9,8 @@ import Main.Select.Update exposing (..)
 import Main.Select.View exposing (..)
 
 
-initSelect : () -> ( ModelSelect, Cmd UpdateSelect )
-initSelect _ =
+init : () -> ( ModelSelect, Cmd UpdateSelect )
+init _ =
     ( { repositoryUrl = "github:imincik/nix-forge"
       , recipeDirApps = ""
       , apps = Dict.empty
@@ -18,12 +18,12 @@ initSelect _ =
       , searchString = ""
       , error = Nothing
       }
-    , getConfig
+    , httpGetConfig
     )
 
 
-getConfig : Cmd UpdateSelect
-getConfig =
+httpGetConfig : Cmd UpdateSelect
+httpGetConfig =
     Http.get
         { url = "/forge-config.json"
         , expect = Http.expectJson UpdateSelect_GetConfig configDecoder

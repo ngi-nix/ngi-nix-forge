@@ -14,12 +14,14 @@ type UpdateSelect
     = UpdateSelect_App App
     | UpdateSelect_CopyCode String
     | UpdateSelect_GetConfig (Result Http.Error Config)
+      -- | Description: an `UpdateSelect` can route
+      -- to any other `Route` of the application.
     | UpdateSelect_Route Route
     | UpdateSelect_Search String
 
 
-updateSelect : UpdateSelect -> ModelSelect -> Updater ModelSelect UpdateSelect
-updateSelect msg model =
+updater : UpdateSelect -> ModelSelect -> Updater ModelSelect UpdateSelect
+updater msg model =
     case msg of
         UpdateSelect_App app ->
             Updater_Model { model | selectedApp = Just app }
@@ -44,24 +46,20 @@ updateSelect msg model =
                         { model | error = Just (Http.errorToString err) }
 
         UpdateSelect_Route route ->
-            case route of
-                Route_Select r ->
-                    Updater_Cmd (routeSelect r model)
+            Updater_Route route
 
         UpdateSelect_Search string ->
             Updater_Model
                 { model | searchString = string }
 
 
-routeSelect : RouteSelect -> ModelSelect -> ( ModelSelect, Cmd UpdateSelect )
-routeSelect rt model =
+router : RouteSelect -> ModelSelect -> Updater ModelSelect UpdateSelect
+router rt model =
     case rt of
         RouteSelect_List ->
-            ( { model | selectedApp = Nothing }
-            , Cmd.none
-            )
+            Updater_Model
+                { model | selectedApp = Nothing }
 
-        RouteSelect_App (AppName pkgName) ->
-            ( { model | selectedApp = model.apps |> Dict.get pkgName }
-            , Cmd.none
-            )
+        RouteSelect_App (AppName appName) ->
+            Updater_Model
+                { model | selectedApp = model.apps |> Dict.get appName }

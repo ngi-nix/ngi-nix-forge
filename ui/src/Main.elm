@@ -7,10 +7,10 @@ import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Model exposing (..)
 import Main.Route exposing (..)
-import Main.Select exposing (..)
+import Main.Select as Select exposing (..)
 import Main.Select.Model exposing (..)
 import Main.Select.Update exposing (..)
-import Main.Select.View exposing (..)
+import Main.Select.View as Select exposing (..)
 import Main.Update exposing (..)
 import Url exposing (Url)
 
@@ -30,12 +30,12 @@ main =
 init : () -> Url -> Nav.Key -> ( Model, Cmd Update )
 init inp url navKey =
     let
-        ( modelSelect, updateSelect ) =
-            initSelect inp
+        ( modelSelect, cmdSelect ) =
+            inp |> Select.init
     in
     ( Model_Select modelSelect
     , Cmd.batch
-        [ updateSelect |> Cmd.map Update_Select
+        [ cmdSelect |> Cmd.map Update_Select
         ]
     )
 
@@ -44,4 +44,4 @@ view : Model -> Html Update
 view model =
     case model of
         Model_Select m ->
-            m |> viewSelect |> Html.map Update_Select
+            m |> Select.viewer |> Html.map Update_Select
