@@ -33,7 +33,7 @@
             echo "$(tput rev)QuickStart$(tput sgr0): run the ui-dev command"
             echo "to get a development Web server with live reload."
             echo "Interrupt by sending SIGINT with Ctrl-C"
-            echo "$(tput rev)Documentation$(tput sgr0): browse manuals/contributor/ for more."
+            echo "$(tput rev)Documentation$(tput sgr0): browse docs/manuals/contributor/ for more."
             echo
             }
           '';
