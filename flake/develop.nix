@@ -25,6 +25,7 @@
             nixfmt
             nodejs
             self'.packages.elm-watch
+            self'.packages.elm2nix
             systemd-manager-tui
             watchman
           ];
