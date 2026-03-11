@@ -67,7 +67,7 @@ toAppUrl page =
                             , fragment = Nothing
                             }
 
-                RouteSelect_App (App.AppName name) ->
+                RouteSelect_App name ->
                     [ "app", name ] |> AppUrl.fromPath
 
 

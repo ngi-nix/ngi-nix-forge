@@ -57,7 +57,7 @@ router rt model =
                     , modelSelect_search = search
                 }
 
-        RouteSelect_App (AppName appName) ->
+        RouteSelect_App appName ->
             Updater_Model
                 { model
                     | modelSelect_focus =

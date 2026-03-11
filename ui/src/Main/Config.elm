@@ -21,7 +21,7 @@ configDecoder =
     Decode.map4 Config
         (Decode.field "repositoryUrl" Decode.string)
         (Decode.field "recipeDirs" recipeDirsDecoder)
-        (Decode.field "apps" (Decode.list appDecoder |> Decode.map (List.map (\app -> ( app.name |> App.unAppName, app )) >> Dict.fromList)))
+        (Decode.field "apps" (Decode.list appDecoder |> Decode.map (List.map (\app -> ( app.name, app )) >> Dict.fromList)))
         (Decode.field "appsFilter" optionsFilterDecoder)
 
 

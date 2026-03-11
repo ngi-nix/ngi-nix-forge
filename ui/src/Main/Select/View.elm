@@ -68,7 +68,7 @@ viewerFocus model =
                                 identity
 
                             _ ->
-                                List.filter (\app -> String.contains model.modelSelect_search (App.unAppName app.name))
+                                List.filter (\app -> String.contains model.modelSelect_search app.name)
                        )
                     |> List.map (model |> viewerSearchResult)
                 )
@@ -77,7 +77,7 @@ viewerFocus model =
             div [ class "" ]
                 [ h2
                     []
-                    [ text (app.name |> App.unAppName)
+                    [ text app.name
                     ]
                 , div
                     []
@@ -111,10 +111,10 @@ viewerSearchResult model app =
         , onClick (UpdateSelect_Route (Route_Select (RouteSelect_App app.name)))
         ]
         [ div
-            [ name ("app-" ++ App.unAppName app.name)
+            [ name ("app-" ++ app.name)
             , class "d-flex w-100 justify-content-between"
             ]
-            [ h5 [ class "mb-1" ] [ text (App.unAppName app.name) ]
+            [ h5 [ class "mb-1" ] [ text app.name ]
             , small [] [ text ("v" ++ app.version) ]
             ]
         , p
