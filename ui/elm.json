@@ -12,17 +12,24 @@
             "elm/http": "2.0.0",
             "elm/json": "1.1.4",
             "elm/url": "1.0.0",
-            "elm-explorations/markdown": "1.0.0"
+            "elm-explorations/markdown": "1.0.0",
+            "elmcraft/core-extra": "2.3.0",
+            "lydell/elm-app-url": "1.0.4"
         },
         "indirect": {
             "elm/bytes": "1.0.8",
             "elm/file": "1.0.5",
+            "elm/regex": "1.0.0",
             "elm/time": "1.0.0",
             "elm/virtual-dom": "1.0.4"
         }
     },
     "test-dependencies": {
-        "direct": {},
-        "indirect": {}
+        "direct": {
+            "elm-explorations/test": "2.2.1"
+        },
+        "indirect": {
+            "elm/random": "1.0.0"
+        }
     }
 }

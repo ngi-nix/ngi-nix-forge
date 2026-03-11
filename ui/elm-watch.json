@@ -1,0 +1,11 @@
+{
+    "postprocess": ["elm-watch/postprocess.sh"],
+    "targets": {
+        "main": {
+            "inputs": [
+                "src/Main.elm"
+            ],
+            "output": "build/Elm.js"
+        }
+    }
+}

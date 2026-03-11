@@ -25,6 +25,11 @@
     #   url = "github:cachix/git-hooks.nix";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+
+    nimi.url = "github:ju1m/nimi/perf-evalNimiModule";
+    nimi.inputs.nixpkgs.follows = "nixpkgs";
+    nimi-def.url = "github:ju1m/nimi/perf-evalNimiModule";
+    nimi-def.flake = false;
   };
 
   outputs =
@@ -45,6 +50,7 @@
       imports = [
         (import ./forge/flake-module.nix { inherit inputs; })
         ./flake/develop.nix
+        ./flake/packages.nix
         ./flake/checks.nix
         ./flake/templates.nix
       ];
@@ -54,14 +60,16 @@
       # Export flake module for use in other projects
       flake.flakeModules.default = import ./forge/flake-module.nix { inherit inputs; };
 
-      perSystem = { ... }: {
-        forge = {
-          repositoryUrl = "github:imincik/nix-forge";
-          recipeDirs = {
-            packages = "recipes/packages";
-            apps = "recipes/apps";
+      perSystem =
+        { ... }:
+        {
+          forge = {
+            repositoryUrl = "github:imincik/nix-forge";
+            recipeDirs = {
+              packages = "recipes/packages";
+              apps = "recipes/apps";
+            };
           };
         };
-      };
     };
 }

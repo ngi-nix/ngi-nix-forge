@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+set -u
+rootDir=$(realpath "${0%/*}"/..)
+cd "$rootDir"
+unit=ngi_nix_dev
+slice=session-${unit}
+function clean {
+  set +e
+  systemctl --user stop ${slice}.slice
+  systemctl --user reset-failed ${unit}-'*'.service
+  rm -rf ui/build
+}
+function onExit {
+  set +e
+  clean
+  systemctl --user stop ${slice}.slice
+  systemctl --user reset-failed ${unit}-'*'.service
+  watchman trigger-del . "$unit"
+  watchman watch-del .
+}
+
+trap onExit EXIT
+clean
+set -ex
+listenPort="${listenPort:-5000}"
+
+# symlink bootstrap css
+mkdir -p "$rootDir/ui/build/resources"
+ln -s "$(
+  nix build \
+    --print-out-paths --no-link \
+    -f "$rootDir" "_forge-ui.passthru.bootstrapCss"
+)/css/bootstrap.min.css" \
+  "$rootDir/ui/build/resources/bootstrap.min.css"
+
+# Note: using `watchman watch-project`
+# would not support working in a non-default git-worktree or jj-workspace.
+# Remark(resiliency): if the systemd unit in watchman fails,
+# `systemctl --user reset-failed`
+# needs to be called (eg. by rerunning this script).
+watchman watch .
+watchman -j <<EOT
+[ "trigger"
+, "$PWD"
+, {
+    "name": "$unit",
+    "command": [ "systemd-run", "--user", "--pipe", "--slice", "$slice", "-u", "${unit}-config"
+               , "nix", "build", "-f", "$rootDir", "_forge-config", "-o", "$rootDir/ui/build/forge-config.json", "--show-trace"
+               ],
+    "append_files": false,
+    "expression": [
+      "anyof",
+      [
+        "match",
+        "forge/**/*.nix",
+        "wholename",
+        {"includedotfiles": false}
+      ],
+      [
+        "match",
+        "recipes/**/*.nix",
+        "wholename",
+        {"includedotfiles": false}
+      ]
+    ]
+  }
+]
+EOT
+
+systemd-run --user --slice "$slice" -u ${unit}-elm-watch \
+  -p Environment=ELM_WATCH_HOST="${ELM_WATCH_HOST:-"127.0.0.1"}" \
+  -p Environment=PATH="$(dirname "$(which elm-review)"):$PATH" \
+  -p WorkingDirectory="$PWD/ui" \
+  elm-watch hot
+
+# Remark(correctness): esbuild never serves stale build results
+# https://esbuild.github.io/api/#serve
+systemd-run --user --slice "$slice" -u ${unit}-esbuild \
+  -p WorkingDirectory="$PWD/ui" \
+  esbuild \
+  --bundle \
+  --loader:.html=copy \
+  --outbase=src \
+  --outdir=build \
+  --serve="${listenPort}" \
+  --servedir=build \
+  --serve-fallback=src/index.html \
+  --sourcemap=external \
+  --watch=forever \
+  src/**/*.css \
+  src/**/*.html \
+  src/**/*.js
+
+journalctl --since "-5s" --user -f \
+  -u ${unit}-config.service \
+  -u ${slice}.slice

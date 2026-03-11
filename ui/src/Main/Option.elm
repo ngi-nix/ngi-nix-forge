@@ -1,13 +1,7 @@
-module OptionsDecoder exposing (Option, OptionsData, optionsDecoder)
+module Main.Option exposing (Option, OptionsData, optionsDecoder)
 
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder, field, string)
-
-
-type alias LiteralExpression =
-    { expressionType : String
-    , text : String
-    }
 
 
 type alias Option =
@@ -19,6 +13,12 @@ type alias Option =
     , default : Maybe LiteralExpression
     , example : Maybe LiteralExpression
     , value : String
+    }
+
+
+type alias LiteralExpression =
+    { expressionType : String
+    , text : String
     }
 
 

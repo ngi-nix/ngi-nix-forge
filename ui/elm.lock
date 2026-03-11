@@ -43,6 +43,18 @@
     },
     {
         "author": "elm",
+        "package": "random",
+        "version": "1.0.0",
+        "sha256": "0z0znkwfs35xiabk6pa9yqwsq03jssgd7jmsj1kk000mikfm7f39"
+    },
+    {
+        "author": "elm",
+        "package": "regex",
+        "version": "1.0.0",
+        "sha256": "1hghzjbf479qn5aynyaqr0966sy5x2dz4zb9sw31hf6m9f8x4gb7"
+    },
+    {
+        "author": "elm",
         "package": "time",
         "version": "1.0.0",
         "sha256": "0wqa2vhl1zf8z0j2yd3yjwfhr0dydfns43bbzll3k4rhnjadxr1l"
@@ -64,5 +76,23 @@
         "package": "markdown",
         "version": "1.0.0",
         "sha256": "1f57ikdpbbhchcpwj32216gxjxijrc3sdpg27s1cgzia9pnkqk6p"
+    },
+    {
+        "author": "elm-explorations",
+        "package": "test",
+        "version": "2.2.1",
+        "sha256": "0rgwwqbnbj61x0c3lvk9d0z2qlw219djkhnc02qygsw9k5599q3v"
+    },
+    {
+        "author": "elmcraft",
+        "package": "core-extra",
+        "version": "2.3.0",
+        "sha256": "112rw68fid0w9ws42b4dsmjyv6fdd260ghiav9b6qcrzlzhac8qi"
+    },
+    {
+        "author": "lydell",
+        "package": "elm-app-url",
+        "version": "1.0.4",
+        "sha256": "1hyhq0vvs9b26vv5gdf7j7hmhxj0zg0dqm95m30i91k8m8wkyhs7"
     }
 ]
