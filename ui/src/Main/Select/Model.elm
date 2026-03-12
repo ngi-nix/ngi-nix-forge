@@ -16,7 +16,17 @@ type alias ModelSelect =
     }
 
 
+type ModalTab
+    = Programs
+    | Containers
+    | VM
+
+
 type ModelSelectFocus
-    = ModelSelectFocus_App { app : App }
+    = ModelSelectFocus_App
+        { app : App
+        , showRunModal : Bool
+        , activeModalTab : ModalTab
+        }
     | ModelSelectFocus_Search
     | ModelSelectFocus_Error { msg : String }

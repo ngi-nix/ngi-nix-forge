@@ -17,13 +17,23 @@ type UpdateSelect
       -- | Description: an `UpdateSelect` can route
       -- to any other `Route` of the application.
     | UpdateSelect_Route Route
+    | UpdateSelect_ToggleRunModal Bool
+    | UpdateSelect_SetModalTab ModalTab
 
 
 updater : UpdateSelect -> ModelSelect -> Updater ModelSelect UpdateSelect
 updater msg model =
     case msg of
         UpdateSelect_App app ->
-            Updater_Model { model | modelSelect_focus = ModelSelectFocus_App { app = app } }
+            Updater_Model
+                { model
+                    | modelSelect_focus =
+                        ModelSelectFocus_App
+                            { app = app
+                            , showRunModal = False
+                            , activeModalTab = Programs
+                            }
+                }
 
         UpdateSelect_CopyCode code ->
             Updater_Cmd
@@ -46,6 +56,33 @@ updater msg model =
         UpdateSelect_Route route ->
             Updater_Route route
 
+        UpdateSelect_ToggleRunModal visibility ->
+            case model.modelSelect_focus of
+                ModelSelectFocus_App state ->
+                    Updater_Model
+                        { model
+                            | modelSelect_focus =
+                                ModelSelectFocus_App
+                                    { state
+                                        | showRunModal = visibility
+                                    }
+                        }
+
+                _ ->
+                    Updater_Model model
+
+        UpdateSelect_SetModalTab tab ->
+            case model.modelSelect_focus of
+                ModelSelectFocus_App state ->
+                    Updater_Model
+                        { model
+                            | modelSelect_focus =
+                                ModelSelectFocus_App { state | activeModalTab = tab }
+                        }
+
+                _ ->
+                    Updater_Model model
+
 
 router : RouteSelect -> ModelSelect -> Updater ModelSelect UpdateSelect
 router rt model =
@@ -63,7 +100,11 @@ router rt model =
                     | modelSelect_focus =
                         case model.apps |> Dict.get appName of
                             Just app ->
-                                ModelSelectFocus_App { app = app }
+                                ModelSelectFocus_App
+                                    { app = app
+                                    , showRunModal = False
+                                    , activeModalTab = Programs
+                                    }
 
                             Nothing ->
                                 ModelSelectFocus_Error { msg = "No such app: " ++ appName }
