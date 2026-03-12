@@ -17,6 +17,15 @@
     ];
   };
 
+  container = {
+    enable = true;
+    name = "hello";
+    tag = "latest";
+    requirements = [
+      pkgs.mypkgs.hello
+    ];
+  };
+
   containers = {
     enable = true;
     images = [
