@@ -36,6 +36,15 @@
         });
     };
 
+    # NOTE: config is reserved by the module system
+    imageConfig = lib.mkOption {
+      type = with lib.types; lazyAttrsOf anything;
+      default = { };
+      description = ''
+        OCI image configuration as specified in <https://specs.opencontainers.org/image-spec/config/#properties>.
+      '';
+    };
+
     result = {
       nimi = lib.mkOption {
         internal = true;
@@ -71,7 +80,10 @@
 
   config = {
     result.nimi.config = {
-      settings.container.copyToRoot = config.requirements;
+      settings.container = {
+        copyToRoot = config.requirements;
+        inherit (config) imageConfig;
+      };
 
       services = lib.mapAttrs (serviceName: service: {
         imports = [

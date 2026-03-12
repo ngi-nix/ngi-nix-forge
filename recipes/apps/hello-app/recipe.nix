@@ -21,6 +21,11 @@
     enable = true;
     name = "hello";
     tag = "latest";
+    imageConfig = {
+      Env = [
+        "flag=yes"
+      ];
+    };
     requirements = [
       pkgs.mypkgs.hello
     ];
