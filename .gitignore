@@ -3,3 +3,4 @@ ui/elm-stuff/*
 ui/src/main.js
 ui/src/options.js
 *.qcow2
+*.tar
