@@ -1,6 +1,5 @@
 module Main.Config.App exposing (..)
 
-import Dict exposing (Dict)
 import Json.Decode as Decode
 
 
@@ -11,7 +10,7 @@ type alias App =
     , usage : String
     , programs : AppPrograms
     , container : AppContainer
-    , oci : Dict String AppOci
+    , vm : AppNixosVm
     }
 
 
@@ -25,7 +24,7 @@ type alias AppContainer =
     }
 
 
-type alias AppOci =
+type alias AppNixosVm =
     { enable : Bool
     }
 
@@ -52,7 +51,7 @@ appDecoder =
         (Decode.field "usage" Decode.string)
         (Decode.field "programs" appProgramsDecoder)
         (Decode.field "container" appContainerDecoder)
-        (Decode.field "vm" appOciDecoder |> Decode.map (\oci -> [ ( "default", oci ) ] |> Dict.fromList))
+        (Decode.field "nixos" appNixosVmDecoder)
 
 
 appProgramsDecoder : Decode.Decoder AppPrograms
@@ -67,7 +66,7 @@ appContainerDecoder =
         (Decode.field "enable" Decode.bool)
 
 
-appOciDecoder : Decode.Decoder AppOci
-appOciDecoder =
-    Decode.map AppOci
+appNixosVmDecoder : Decode.Decoder AppNixosVm
+appNixosVmDecoder =
+    Decode.map AppNixosVm
         (Decode.field "enable" Decode.bool)

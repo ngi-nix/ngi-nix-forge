@@ -132,8 +132,8 @@ viewerSearchResult model app =
 
                       else
                         []
-                    , if app.oci |> Dict.values |> List.any (\x -> x.enable) then
-                        [ span [ class "badge bg-secondary" ] [ text "oci" ] ]
+                    , if app.vm.enable then
+                        [ span [ class "badge bg-secondary" ] [ text "nixos-vm" ] ]
 
                       else
                         []

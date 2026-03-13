@@ -1,7 +1,6 @@
 module Main.Select.View.Instructions exposing (..)
 
-import Dict
-import Html exposing (Html, a, button, code, div, h2, h3, hr, p, pre, span, text)
+import Html exposing (Html, a, button, code, div, h2, h3, hr, p, pre, text)
 import Html.Attributes exposing (class, href, style, target)
 import Html.Events exposing (onClick)
 import Main.Config.App exposing (App)
@@ -82,7 +81,7 @@ podman-compose --profile services --file $(pwd)/result/compose.yaml up
 
 runAppVmCmd : String -> App -> String
 runAppVmCmd repositoryUrl app =
-    format """nix run {0}#{1}.oci
+    format """nix run {0}#{1}.vm
 """ [ repositoryUrl, app.name ]
 
 
@@ -105,8 +104,8 @@ appInstructionsHtml repositoryUrl recipeDirApps onCopy maybeApp =
 
               else
                 text ""
-            , if not app.programs.enable && not app.container.enable && not (app.oci |> Dict.values |> List.any (\x -> x.enable)) then
-                p [ style "color" "red" ] [ text "No output is enabled for this app. Enable at least one of the - programs, container or OCI - in recipe file." ]
+            , if not app.programs.enable && not app.container.enable && not app.vm.enable then
+                p [ style "color" "red" ] [ text "No output is enabled for this app. Enable at least one of the - programs, container or nixos vm - in recipe file." ]
 
               else
                 text ""
@@ -120,25 +119,17 @@ appInstructionsHtml repositoryUrl recipeDirApps onCopy maybeApp =
                 text ""
             , if app.container.enable then
                 div []
-                    [ p [ style "margin-bottom" "0em" ] [ text "Run application services in container" ]
+                    [ p [ style "margin-bottom" "0em" ] [ text "Run application services in OCI container" ]
                     , codeBlock onCopy (runAppContainerCmd repositoryUrl app)
                     ]
 
               else
                 text ""
-            , if app.oci |> Dict.values |> List.any (\x -> x.enable) then
+            , if app.vm.enable then
                 div []
-                    (app.oci
-                        |> Dict.toList
-                        |> List.map
-                            (\( n, v ) ->
-                                div []
-                                    [ p [ style "margin-bottom" "0em" ]
-                                        [ text "Run application services in OCI container \"", text n, text "\"" ]
-                                    , codeBlock onCopy (runAppVmCmd repositoryUrl app)
-                                    ]
-                            )
-                    )
+                    [ p [ style "margin-bottom" "0em" ] [ text "Run application services in Nixos vm" ]
+                    , codeBlock onCopy (runAppVmCmd repositoryUrl app)
+                    ]
 
               else
                 text ""
