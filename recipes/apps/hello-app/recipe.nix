@@ -17,36 +17,17 @@
     ];
   };
 
-  containers = {
+  container = {
     enable = true;
-    images = [
-      {
-        name = "hello-english";
-        requirements = [ pkgs.mypkgs.hello ];
-        config.CMD = [
-          "hello"
-          "--greeting"
-          "Hello"
-        ];
-      }
-      {
-        name = "hello-italian";
-        requirements = [ pkgs.mypkgs.hello ];
-        config.CMD = [
-          "hello"
-          "--greeting"
-          "Ciao"
-        ];
-      }
-      {
-        name = "hello-spanish";
-        requirements = [ pkgs.mypkgs.hello ];
-        config.CMD = [
-          "hello"
-          "--greeting"
-          "Hola"
-        ];
-      }
+    name = "hello";
+    tag = "latest";
+    imageConfig = {
+      Env = [
+        "flag=yes"
+      ];
+    };
+    requirements = [
+      pkgs.mypkgs.hello
     ];
     composeFile = ./compose.yaml;
   };

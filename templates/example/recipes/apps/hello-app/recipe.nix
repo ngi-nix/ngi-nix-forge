@@ -17,25 +17,23 @@
     ];
   };
 
-  containers = {
+  container = {
     enable = true;
-    images = [
-      {
-        name = "hello";
-        requirements = [ pkgs.mypkgs.hello-nix ];
-        config.CMD = [
-          "hello"
-        ];
-      }
+    name = "hello";
+    requirements = [ pkgs.mypkgs.hello-nix ];
+    imageConfig.CMD = [
+      "hello"
     ];
     composeFile = ./compose.yaml;
   };
 
-  vm = {
+  nixos = {
     enable = true;
     name = "hello";
-    requirements = [
-      pkgs.mypkgs.hello-nix
-    ];
+    extraConfig = {
+      environment.systemPackages = [
+        pkgs.mypkgs.hello-nix
+      ];
+    };
   };
 }

@@ -1,16 +1,19 @@
 services:
-  hello-english:
-    image: localhost/hello-english:latest
+  hello-english: &hello
+    image: localhost/hello:latest
+    entrypoint: ["hello", "--greeting", "Hello"]
     profiles:
       - services
 
   hello-italian:
-    image: localhost/hello-italian:latest
+    <<: *hello
+    entrypoint: ["hello", "--greeting", "Ciao"]
     profiles:
       - services
 
   hello-spanish:
-    image: localhost/hello-spanish:latest
+    <<: *hello
+    entrypoint: ["hello", "--greeting", "Hola"]
     profiles:
       - programs
       - services

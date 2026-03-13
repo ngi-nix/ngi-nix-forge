@@ -11,7 +11,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nix-forge.url = "github:imincik/nix-forge";
+    nix-forge.url = "github:ngi-nix/ngi-nix-forge";
     elm2nix = {
       url = "github:dwayne/elm2nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,6 +20,7 @@
       url = "github:imincik/nix-utils";
       flake = false;
     };
+    nimi.url = "github:weyl-ai/nimi";
   };
 
   outputs =
@@ -29,8 +30,10 @@
       imports = [ nix-forge.flakeModules.default ];
 
       perSystem =
-        { ... }:
+        { system, ... }:
         {
+          _module.args.nimi = inputs.nimi.packages.${system}.nimi;
+
           forge = {
             repositoryUrl = "github:me/my-forge";
             recipeDirs = {
