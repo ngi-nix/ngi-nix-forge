@@ -43,6 +43,12 @@
     },
     {
         "author": "elm",
+        "package": "parser",
+        "version": "1.1.0",
+        "sha256": "06xx29rmagc5r45qfpvrd393lz83ylngidfp08432f1qc8y6r3lh"
+    },
+    {
+        "author": "elm",
         "package": "random",
         "version": "1.0.0",
         "sha256": "0z0znkwfs35xiabk6pa9yqwsq03jssgd7jmsj1kk000mikfm7f39"
@@ -73,12 +79,6 @@
     },
     {
         "author": "elm-explorations",
-        "package": "markdown",
-        "version": "1.0.0",
-        "sha256": "1f57ikdpbbhchcpwj32216gxjxijrc3sdpg27s1cgzia9pnkqk6p"
-    },
-    {
-        "author": "elm-explorations",
         "package": "test",
         "version": "2.2.1",
         "sha256": "0rgwwqbnbj61x0c3lvk9d0z2qlw219djkhnc02qygsw9k5599q3v"
@@ -94,5 +94,17 @@
         "package": "elm-app-url",
         "version": "1.0.4",
         "sha256": "1hyhq0vvs9b26vv5gdf7j7hmhxj0zg0dqm95m30i91k8m8wkyhs7"
+    },
+    {
+        "author": "pablohirafuji",
+        "package": "elm-markdown",
+        "version": "2.0.6",
+        "sha256": "0wl9v5aha1wcyz070g8djlg9dspam7zp8f3w55rvdwh8shgldj40"
+    },
+    {
+        "author": "pablohirafuji",
+        "package": "elm-syntax-highlight",
+        "version": "3.7.1",
+        "sha256": "1z8pyqnfq090hkiw2jhprs735bb06hckab5cn6maivrjff13l0rj"
     }
 ]

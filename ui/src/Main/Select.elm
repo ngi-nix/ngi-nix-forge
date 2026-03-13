@@ -12,7 +12,7 @@ import Main.Select.View exposing (..)
 
 init : { navKey : Nav.Key } -> ( ModelSelect, Cmd UpdateSelect )
 init { navKey } =
-    ( { repositoryUrl = "github:imincik/nix-forge"
+    ( { repositoryUrl = "github:ngi-nix/ngi-nix-forge"
       , recipeDirApps = ""
       , apps = Dict.empty
       , modelSelect_navKey = navKey

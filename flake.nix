@@ -21,15 +21,12 @@
       flake = false;
     };
 
+    nimi.url = "github:weyl-ai/nimi";
+
     # git-hooks = {
     #   url = "github:cachix/git-hooks.nix";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-
-    nimi.url = "github:ju1m/nimi/perf-evalNimiModule";
-    nimi.inputs.nixpkgs.follows = "nixpkgs";
-    nimi-def.url = "github:ju1m/nimi/perf-evalNimiModule";
-    nimi-def.flake = false;
   };
 
   outputs =
@@ -61,10 +58,12 @@
       flake.flakeModules.default = import ./forge/flake-module.nix { inherit inputs; };
 
       perSystem =
-        { ... }:
+        { system, ... }:
         {
+          _module.args.nimi = inputs.nimi.packages.${system}.nimi;
+
           forge = {
-            repositoryUrl = "github:imincik/nix-forge";
+            repositoryUrl = "github:ngi-nix/ngi-nix-forge";
             recipeDirs = {
               packages = "recipes/packages";
               apps = "recipes/apps";

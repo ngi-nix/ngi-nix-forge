@@ -1,6 +1,5 @@
 module Main.Config.App exposing (..)
 
-import Dict exposing (Dict)
 import Json.Decode as Decode
 
 
@@ -10,8 +9,8 @@ type alias App =
     , version : String
     , usage : String
     , programs : AppPrograms
-    , containers : AppContainers
-    , oci : Dict String AppOci
+    , container : AppContainer
+    , vm : AppNixosVm
     }
 
 
@@ -20,12 +19,12 @@ type alias AppPrograms =
     }
 
 
-type alias AppContainers =
+type alias AppContainer =
     { enable : Bool
     }
 
 
-type alias AppOci =
+type alias AppNixosVm =
     { enable : Bool
     }
 
@@ -51,8 +50,8 @@ appDecoder =
         (Decode.field "version" Decode.string)
         (Decode.field "usage" Decode.string)
         (Decode.field "programs" appProgramsDecoder)
-        (Decode.field "containers" appContainersDecoder)
-        (Decode.field "vm" appOciDecoder |> Decode.map (\oci -> [ ( "default", oci ) ] |> Dict.fromList))
+        (Decode.field "container" appContainerDecoder)
+        (Decode.field "nixos" appNixosVmDecoder)
 
 
 appProgramsDecoder : Decode.Decoder AppPrograms
@@ -61,13 +60,13 @@ appProgramsDecoder =
         (Decode.field "enable" Decode.bool)
 
 
-appContainersDecoder : Decode.Decoder AppContainers
-appContainersDecoder =
-    Decode.map AppContainers
+appContainerDecoder : Decode.Decoder AppContainer
+appContainerDecoder =
+    Decode.map AppContainer
         (Decode.field "enable" Decode.bool)
 
 
-appOciDecoder : Decode.Decoder AppOci
-appOciDecoder =
-    Decode.map AppOci
+appNixosVmDecoder : Decode.Decoder AppNixosVm
+appNixosVmDecoder =
+    Decode.map AppNixosVm
         (Decode.field "enable" Decode.bool)
