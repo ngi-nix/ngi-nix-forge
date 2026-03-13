@@ -46,6 +46,7 @@
     imageConfig.CMD = [
       "python-web"
     ];
+    composeFile = ./compose.yaml;
   };
 
   nixos = {

@@ -24,6 +24,7 @@
     imageConfig.CMD = [
       "hello"
     ];
+    composeFile = ./compose.yaml;
   };
 
   nixos = {

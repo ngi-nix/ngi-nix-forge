@@ -29,5 +29,6 @@
     requirements = [
       pkgs.mypkgs.hello
     ];
+    composeFile = ./compose.yaml;
   };
 }
