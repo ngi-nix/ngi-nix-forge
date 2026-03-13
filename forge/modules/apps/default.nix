@@ -161,9 +161,9 @@ in
               containers = [
                 "apps.*.name"
                 "apps.*.version"
-                "apps.*.containers.enable"
-                "apps.*.containers.images"
-                "apps.*.containers.composeFile"
+                "apps.*.container.enable"
+                "apps.*.container.images"
+                "apps.*.container.composeFile"
               ];
               vm = [
                 "apps.*.name"

@@ -70,7 +70,7 @@ runAppShellCmd repositoryUrl app =
 
 runAppContainerCmd : String -> App -> String
 runAppContainerCmd repositoryUrl app =
-    format """nix build {0}#{1}.containers
+    format """nix build {0}#{1}.container
 
 for image in ./result/*.tar.gz; do
     podman load < $image
@@ -105,8 +105,8 @@ appInstructionsHtml repositoryUrl recipeDirApps onCopy maybeApp =
 
               else
                 text ""
-            , if not app.programs.enable && not app.containers.enable && not (app.oci |> Dict.values |> List.any (\x -> x.enable)) then
-                p [ style "color" "red" ] [ text "No output is enabled for this app. Enable at least one of the - programs, containers or OCI - in recipe file." ]
+            , if not app.programs.enable && not app.container.enable && not (app.oci |> Dict.values |> List.any (\x -> x.enable)) then
+                p [ style "color" "red" ] [ text "No output is enabled for this app. Enable at least one of the - programs, container or OCI - in recipe file." ]
 
               else
                 text ""
@@ -118,9 +118,9 @@ appInstructionsHtml repositoryUrl recipeDirApps onCopy maybeApp =
 
               else
                 text ""
-            , if app.containers.enable then
+            , if app.container.enable then
                 div []
-                    [ p [ style "margin-bottom" "0em" ] [ text "Run application services in containers" ]
+                    [ p [ style "margin-bottom" "0em" ] [ text "Run application services in container" ]
                     , codeBlock onCopy (runAppContainerCmd repositoryUrl app)
                     ]
 

@@ -127,8 +127,8 @@ viewerSearchResult model app =
 
                       else
                         []
-                    , if app.containers.enable then
-                        [ span [ class "badge bg-secondary me-1" ] [ text "containers" ] ]
+                    , if app.container.enable then
+                        [ span [ class "badge bg-secondary me-1" ] [ text "container" ] ]
 
                       else
                         []
@@ -169,7 +169,7 @@ viewerAppModal appState =
                         , div [ class "modal-body" ]
                             [ ul [ class "nav nav-pills mb-4" ]
                                 [ viewTab Programs "Programs" appState.activeModalTab
-                                , viewTab Containers "Containers" appState.activeModalTab
+                                , viewTab Container "Container" appState.activeModalTab
                                 , viewTab VM "VM" appState.activeModalTab
                                 ]
                             , div [ class "tab-content mb-5 p-3 border rounded bg-light" ]
@@ -214,7 +214,7 @@ viewTabContent activeTab app =
         Programs ->
             div [] [ text "Programs configuration and run commands go here." ]
 
-        Containers ->
+        Container ->
             div [] [ text "Docker/Podman container run commands go here." ]
 
         VM ->

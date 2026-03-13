@@ -10,7 +10,7 @@ type alias App =
     , version : String
     , usage : String
     , programs : AppPrograms
-    , containers : AppContainers
+    , container : AppContainer
     , oci : Dict String AppOci
     }
 
@@ -20,7 +20,7 @@ type alias AppPrograms =
     }
 
 
-type alias AppContainers =
+type alias AppContainer =
     { enable : Bool
     }
 
@@ -51,7 +51,7 @@ appDecoder =
         (Decode.field "version" Decode.string)
         (Decode.field "usage" Decode.string)
         (Decode.field "programs" appProgramsDecoder)
-        (Decode.field "containers" appContainersDecoder)
+        (Decode.field "container" appContainerDecoder)
         (Decode.field "vm" appOciDecoder |> Decode.map (\oci -> [ ( "default", oci ) ] |> Dict.fromList))
 
 
@@ -61,9 +61,9 @@ appProgramsDecoder =
         (Decode.field "enable" Decode.bool)
 
 
-appContainersDecoder : Decode.Decoder AppContainers
-appContainersDecoder =
-    Decode.map AppContainers
+appContainerDecoder : Decode.Decoder AppContainer
+appContainerDecoder =
+    Decode.map AppContainer
         (Decode.field "enable" Decode.bool)
 
 

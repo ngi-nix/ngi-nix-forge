@@ -18,7 +18,7 @@ type alias ModelSelect =
 
 type ModalTab
     = Programs
-    | Containers
+    | Container
     | VM
 
 
