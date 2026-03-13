@@ -43,9 +43,6 @@
     enable = true;
     name = "python-web";
     requirements = [ pkgs.mypkgs.python-web ];
-    imageConfig.CMD = [
-      "python-web"
-    ];
     composeFile = ./compose.yaml;
   };
 
