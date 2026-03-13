@@ -73,13 +73,11 @@ nix shell {0}#{1}
 runAppContainerCmd : String -> App -> String
 runAppContainerCmd repositoryUrl app =
     format """
-nix build {0}#{1}.container
+nix build {0}#{1}.container && ./result/bin/build-oci
 
-for image in ./result/*.tar.gz; do
-    podman load < $image
-done
+podman load < *.tar
 
-podman-compose --profile services --file $(pwd)/result/compose.yaml up
+podman-compose --profile services --file $(pwd)/result/compose.yaml up --force-recreate
 """ [ repositoryUrl, app.name ]
 
 
