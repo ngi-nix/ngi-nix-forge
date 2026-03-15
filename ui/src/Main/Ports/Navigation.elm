@@ -1,4 +1,4 @@
-port module Main.Navigation exposing (navCmd, onNavEvent)
+port module Main.Ports.Navigation exposing (navCmd, onNavEvent)
 
 import Navigation
 
