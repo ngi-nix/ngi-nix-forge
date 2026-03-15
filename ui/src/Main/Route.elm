@@ -6,38 +6,24 @@ import List.Extra as List
 import Main.Config.App as App
 
 
-type Updater model cmd
-    = Updater_Route Route
-    | Updater_Model model
-    | Updater_Cmd ( model, Cmd cmd )
-
-
 type Route
-    = Route_Select RouteSelect
-
-
-type RouteSelect
-    = RouteSelect_Search String
-    | RouteSelect_App App.AppName
-
-
-type Slug
-    = Slug String
+    = Route_Search String
+    | Route_App App.AppName
 
 
 fromAppUrl : AppUrl -> Maybe Route
 fromAppUrl url =
     case url.path of
         [] ->
-            Just (Route_Select (RouteSelect_Search ""))
+            Just (Route_Search "")
 
         [ "app" ] ->
             case url.queryParameters |> Dict.get "q" |> Maybe.andThen List.uncons of
-                Just ( q, _ ) ->
-                    Just (Route_Select (RouteSelect_Search q))
-
                 Nothing ->
                     Nothing
+
+                Just ( q, _ ) ->
+                    Just (Route_Search q)
 
         [ "app", app ] ->
             case app |> App.appName of
@@ -45,30 +31,28 @@ fromAppUrl url =
                     Nothing
 
                 Just name ->
-                    Just (Route_Select (RouteSelect_App name))
+                    Just (Route_App name)
 
         _ ->
             Nothing
 
 
 toAppUrl : Route -> AppUrl
-toAppUrl page =
-    case page of
-        Route_Select rt ->
-            case rt of
-                RouteSelect_Search pattern ->
-                    case pattern of
-                        "" ->
-                            [ "app" ] |> AppUrl.fromPath
+toAppUrl route =
+    case route of
+        Route_Search pattern ->
+            case pattern of
+                "" ->
+                    [ "app" ] |> AppUrl.fromPath
 
-                        _ ->
-                            { path = [ "app" ]
-                            , queryParameters = [ ( "q", [ pattern ] ) ] |> Dict.fromList
-                            , fragment = Nothing
-                            }
+                _ ->
+                    { path = [ "app" ]
+                    , queryParameters = [ ( "q", [ pattern ] ) ] |> Dict.fromList
+                    , fragment = Nothing
+                    }
 
-                RouteSelect_App name ->
-                    [ "app", name ] |> AppUrl.fromPath
+        Route_App name ->
+            [ "app", name ] |> AppUrl.fromPath
 
 
 toString : Route -> String

@@ -1,47 +1,53 @@
 module Main exposing (main)
 
+import AppUrl
 import Browser
-import Browser.Navigation as Nav
-import Html exposing (Html)
+import Html
+import Http
 import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Model exposing (..)
+import Main.Navigation
 import Main.Route exposing (..)
-import Main.Select as Select exposing (..)
-import Main.Select.Model exposing (..)
-import Main.Select.Update exposing (..)
-import Main.Select.View as Select exposing (..)
 import Main.Update exposing (..)
-import Url exposing (Url)
+import Main.View
+import Navigation
+import Url
 
 
-main : Program () Model Update
+main : Program String Model Update
 main =
-    Browser.application
+    Browser.element
         { init = init
-        , view = \model -> { title = "NGI Nix Forge", body = [ view model ] }
+        , view = Main.View.view
         , update = Main.Update.update
-        , subscriptions = \_ -> Sub.none
-        , onUrlRequest = Update_LinkClicked
-        , onUrlChange = Update_UrlChange
+        , subscriptions = subscriptions
         }
 
 
-init : () -> Url -> Nav.Key -> ( Model, Cmd Update )
-init inp url navKey =
-    let
-        ( modelSelect, cmdSelect ) =
-            Select.init { navKey = navKey }
-    in
-    ( Model_Select modelSelect
-    , Cmd.batch
-        [ cmdSelect |> Cmd.map Update_Select
-        ]
+init : String -> ( Model, Cmd Update )
+init href =
+    ( { model_config = Main.Config.configInit
+      , model_search = ""
+      , model_route =
+            href
+                |> Url.fromString
+                |> Maybe.andThen (AppUrl.fromUrl >> Main.Route.fromAppUrl)
+                |> Maybe.withDefault (Route_Search "")
+      , model_focus = ModelFocus_Search
+      }
+    , cmdGetConfig
     )
 
 
-view : Model -> Html Update
-view model =
-    case model of
-        Model_Select m ->
-            m |> Select.viewer |> Html.map Update_Select
+cmdGetConfig : Cmd Update
+cmdGetConfig =
+    Http.get
+        { url = "/forge-config.json"
+        , expect = Http.expectJson Update_GetConfig configDecoder
+        }
+
+
+subscriptions : Model -> Sub Update
+subscriptions _ =
+    Navigation.onEvent Main.Navigation.onNavEvent Update_GotNavigationEvent

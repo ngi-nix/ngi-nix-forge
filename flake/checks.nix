@@ -44,7 +44,7 @@
 
       # All apps passthru attributes
       // (passthruAttr "programs")
-      // (passthruAttr "containers")
+      // (passthruAttr "container")
       // (passthruAttr "vm");
     };
 }

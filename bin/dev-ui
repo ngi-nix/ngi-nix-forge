@@ -22,7 +22,7 @@ function onExit {
 trap onExit EXIT
 clean
 set -ex
-listenPort="${listenPort:-5000}"
+listenPort="${listenPort:-3000}"
 
 # symlink bootstrap css
 mkdir -p "$rootDir/ui/build/resources"

@@ -38,21 +38,59 @@
       border-radius: 0.25rem;
       font-size: 0.9em;
     }
+
+    .button {
+      display: inline-block;
+      padding: 0.1em 0.4em;
+      background-color: transparent;
+      color: white !important;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      border: solid 1px gray;
+      background-color: gray;
+      margin: 0;
+      font-size: 0.8rem;
+    }
+
+    .button.copy:before {
+      content: "⿻ Copy";
+    }
+
+    .button.copy.active:before {
+      content: "⿻ Copied ✓";
+    }
+
+    .button.copy:hover {
+      background-color: darkgrey;
+    }
   </style>
 </head>
 <body>
   <div id="elm-main"></div>
   <script src="/Elm.js"></script>
+  <script src="/Navigation.js"></script>
   <script>
     var app = Elm.Main.init({
-      node: document.getElementById('elm-main')
+      node: document.getElementById('elm-main'),
+      flags: location.href,
+    });
+    window.Navigation.init({
+      navCmd: app.ports.navCmd,
+      onNavEvent: app.ports.onNavEvent,
     });
 
     // Handle copy to clipboard
-    app.ports.copyToClipboard.subscribe(function(text) {
-      navigator.clipboard.writeText(text).then(function() {
-        console.log('Copied to clipboard successfully!');
-      }).catch(function(err) {
+    app.ports.copyToClipboard.subscribe((text) => {
+      navigator.clipboard.writeText(text).then(() => {
+        var button = document.activeElement;
+        if (button) {
+          button.classList.add("active");
+          setTimeout(() => {
+            button.classList.remove("active");
+          }, 2000);
+        }
+      }).catch((err) => {
         console.error('Failed to copy to clipboard:', err);
       });
     });

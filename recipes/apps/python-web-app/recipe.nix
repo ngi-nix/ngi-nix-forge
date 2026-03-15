@@ -39,24 +39,17 @@
     ];
   };
 
-  containers = {
+  container = {
     enable = true;
-    images = [
-      {
-        name = "api";
-        requirements = [ pkgs.mypkgs.python-web ];
-        config.CMD = [
-          "python-web"
-        ];
-      }
-    ];
+    name = "python-web";
+    requirements = [ pkgs.mypkgs.python-web ];
     composeFile = ./compose.yaml;
   };
 
-  vm = {
+  nixos = {
     enable = true;
-    name = "database";
-    config.system = {
+    name = "python-web";
+    extraConfig = {
       # database service
       services.postgresql.enable = true;
       services.postgresql.enableTCPIP = true;
@@ -65,13 +58,13 @@
         host all all 0.0.0.0/0 trust
         host all all ::0/0 trust
       '';
-      # api service
-      systemd.services.api.script = "${pkgs.mypkgs.python-web}/bin/python-web";
-      systemd.services.api.wantedBy = [
+      # python-web service
+      systemd.services.python-web.script = "${pkgs.mypkgs.python-web}/bin/python-web";
+      systemd.services.python-web.wantedBy = [
         "multi-user.target"
       ];
     };
-    config.ports = [
+    vm.forwardPorts = [
       "5000:5000"
     ];
   };

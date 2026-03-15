@@ -16,11 +16,11 @@ in
         options.forge = {
           repositoryUrl = lib.mkOption {
             type = lib.types.str;
-            default = "github:imincik/nix-forge";
+            default = "github:ngi-nix/ngi-nix-forge";
             description = ''
               Nix Forge repository URL.
             '';
-            example = "github:imincik/nix-forge";
+            example = "github:ngi-nix/ngi-nix-forge";
           };
 
           recipeDirs = {
