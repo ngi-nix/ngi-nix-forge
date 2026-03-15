@@ -66,14 +66,14 @@ installInstructionsHtml onCopy =
 runAppShellCmd : String -> App -> String
 runAppShellCmd repositoryUrl app =
     format """
-nix shell {0}#{1}
+nix --experimental-features='nix-command flakes' shell {0}#{1}
 """ [ repositoryUrl, app.app_name ]
 
 
 runAppContainerCmd : String -> App -> String
 runAppContainerCmd repositoryUrl app =
     format """
-nix build {0}#{1}.container && ./result/bin/build-oci
+nix --experimental-features='nix-command flakes' build {0}#{1}.container && ./result/bin/build-oci
 
 podman load < *.tar
 
@@ -84,7 +84,7 @@ podman-compose --profile services --file $(pwd)/result/compose.yaml up --force-r
 runAppVmCmd : String -> App -> String
 runAppVmCmd repositoryUrl app =
     format """
-nix run {0}#{1}.vm
+nix --experimental-features='nix-command flakes' run {0}#{1}.vm
 """ [ repositoryUrl, app.app_name ]
 
 
