@@ -24,14 +24,17 @@ clean
 set -ex
 listenPort="${listenPort:-3000}"
 
-# symlink bootstrap css
+# symlink bootstrap css and js
 mkdir -p "$rootDir/ui/build/css" "$rootDir/ui/build/js"
-ln -s "$(
+bootstrap="$(
   nix build \
     --print-out-paths --no-link \
     -f "$rootDir" "_forge-ui.passthru.bootstrapCss"
-)/css/bootstrap.min.css" \
+)"
+ln -s "$bootstrap/css/bootstrap.min.css" \
   "$rootDir/ui/build/css/bootstrap.min.css"
+ln -s "$bootstrap/js/bootstrap.bundle.min.js" \
+  "$rootDir/ui/build/js/bootstrap.bundle.min.js"
 
 ln -s "$rootDir/ui/build/Elm.js" "$rootDir/ui/build/js/Elm.js"
 
