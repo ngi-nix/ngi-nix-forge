@@ -6,7 +6,8 @@ import Html.Events exposing (onClick)
 import Main.Config.App exposing (App)
 import Main.Helpers.Format exposing (dedent, format)
 import Main.Model exposing (ModalTab(..), ModelFocusApp)
-import Markdown
+import Markdown.Parser
+import Markdown.Renderer exposing (defaultHtmlRenderer)
 
 
 repositoryToGithubUrl : String -> String
@@ -130,16 +131,35 @@ viewInstructionsApp repositoryUrl recipeDirApps onCopy maybeApp modalTab =
             ]
 
 
-usageInstructions : ModelFocusApp -> Html msg
-usageInstructions model =
+renderMarkdown : (String -> msg) -> String -> List (Html msg)
+renderMarkdown onCopy markdownStr =
+    markdownStr
+        |> Markdown.Parser.parse
+        |> Result.mapError (\_ -> "Failed to parse markdown")
+        |> Result.andThen (Markdown.Renderer.render (customRenderer onCopy))
+        |> Result.withDefault [ text "Error rendering markdown." ]
+
+
+customRenderer : (String -> msg) -> Markdown.Renderer.Renderer (Html msg)
+customRenderer onCopy =
+    { defaultHtmlRenderer
+        | codeBlock =
+            \block ->
+                block.body |> dedent |> codeBlock onCopy
+    }
+
+
+usageInstructions : (String -> msg) -> ModelFocusApp -> Html msg
+usageInstructions onCopy model =
     if not (String.isEmpty model.modelFocusApp_app.app_usage) then
         div [ id "usage", class "mt-4" ]
             [ hr [] []
             , h4 [ class "mb-3" ] [ text "Usage Instructions" ]
             , div [ class "markdown-content" ]
-                (Markdown.toHtml
-                    Nothing
-                    (String.trim model.modelFocusApp_app.app_usage)
+                (model.modelFocusApp_app.app_usage
+                    |> String.trim
+                    |> dedent
+                    |> renderMarkdown onCopy
                 )
             ]
 

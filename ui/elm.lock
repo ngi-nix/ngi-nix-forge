@@ -1,5 +1,11 @@
 [
     {
+        "author": "dillonkearns",
+        "package": "elm-markdown",
+        "version": "7.0.1",
+        "sha256": "1fl54pnyqy2jkg5qyx8irzp2yrhla86hqi0pdiqkh11vpqzkn0il"
+    },
+    {
         "author": "elm",
         "package": "browser",
         "version": "1.0.2",
@@ -103,14 +109,14 @@
     },
     {
         "author": "pablohirafuji",
-        "package": "elm-markdown",
-        "version": "2.0.6",
-        "sha256": "0wl9v5aha1wcyz070g8djlg9dspam7zp8f3w55rvdwh8shgldj40"
-    },
-    {
-        "author": "pablohirafuji",
         "package": "elm-syntax-highlight",
         "version": "3.7.1",
         "sha256": "1z8pyqnfq090hkiw2jhprs735bb06hckab5cn6maivrjff13l0rj"
+    },
+    {
+        "author": "rtfeldman",
+        "package": "elm-hex",
+        "version": "1.0.0",
+        "sha256": "0aa3fb1d9h6w6s22hpsxv197g8mb4ki16h0c0rnf324m6b9x8by6"
     }
 ]

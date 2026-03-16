@@ -216,7 +216,7 @@ viewAppModal repositoryUrl model =
                             [ viewModalTabs model
                             , div [ class "tab-content mb-5 p-3 border rounded bg-light" ]
                                 [ viewTabContent repositoryUrl model ]
-                            , usageInstructions model
+                            , usageInstructions Update_CopyCode model
                             ]
                         ]
                     ]
