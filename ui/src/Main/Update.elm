@@ -23,8 +23,9 @@ type Update
     | Update_Navigation Navigation.Event
     | Update_Route Route
     | Update_SetModalTab ModalTab
-    | Update_ToggleRunModal Bool
+    | Update_SetRunModal Bool
     | Update_Updater Updater
+    | Update_NoOp
 
 
 update : Update -> Updater
@@ -73,7 +74,7 @@ update upd model =
                     , Cmd.none
                     )
 
-        Update_ToggleRunModal visibility ->
+        Update_SetRunModal visibility ->
             case model.model_focus of
                 ModelFocus_App state ->
                     ( { model
@@ -108,6 +109,9 @@ update upd model =
                     ( model
                     , Cmd.none
                     )
+
+        Update_NoOp ->
+            ( model, Cmd.none )
 
         Update_Updater up ->
             model |> up

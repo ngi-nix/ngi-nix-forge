@@ -53,5 +53,18 @@ init href =
 
 
 subscriptions : Model -> Sub Update
-subscriptions _ =
-    Navigation.onEvent Main.Ports.Navigation.onNavEvent Update_Navigation
+subscriptions model =
+    let
+        activePageSub =
+            case model.model_focus of
+                ModelFocus_App state ->
+                    Main.View.subscriptions state
+
+                _ ->
+                    Sub.none
+
+        globalSubs =
+            [ Navigation.onEvent Main.Ports.Navigation.onNavEvent Update_Navigation
+            ]
+    in
+    Sub.batch (activePageSub :: globalSubs)

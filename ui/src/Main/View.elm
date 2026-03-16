@@ -1,9 +1,10 @@
 module Main.View exposing (..)
 
+import Browser.Events
 import Dict
 import Html exposing (Attribute, Html, a, div, footer, h2, h3, h4, h5, header, hr, input, li, main_, nav, p, section, small, span, text, ul)
 import Html.Attributes exposing (class, href, id, name, placeholder, style, tabindex, target, value)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick, onInput, stopPropagationOn)
 import Json.Decode as Decode
 import Main.Config exposing (..)
 import Main.Config.App exposing (..)
@@ -175,7 +176,7 @@ viewFocus_App repositoryUrl model =
                 ]
             , Html.button
                 [ class "btn btn-success"
-                , onClick (Update_ToggleRunModal True)
+                , onClick (Update_SetRunModal True)
                 ]
                 [ text "Run" ]
             ]
@@ -197,14 +198,18 @@ viewAppModal repositoryUrl model =
                 , style "display" "block"
                 , tabindex -1
                 , style "background-color" "rgba(0,0,0,0.5)"
+                , onClick (Update_SetRunModal False)
                 ]
-                [ div [ class "modal-dialog modal-lg" ]
+                [ div
+                    [ class "modal-dialog modal-lg"
+                    , stopPropagationOn "click" (Decode.succeed ( Update_NoOp, True ))
+                    ]
                     [ div [ class "modal-content" ]
                         [ div [ class "modal-header bg-light" ]
                             [ h5 [ class "modal-title" ] [ text ("Run " ++ model.modelFocusApp_app.app_name) ]
                             , Html.button
                                 [ class "btn-close"
-                                , onClick (Update_ToggleRunModal False)
+                                , onClick (Update_SetRunModal False)
                                 ]
                                 []
                             ]
@@ -342,3 +347,25 @@ viewPoweredBy =
             , text "."
             ]
         ]
+
+
+subscriptions : ModelFocusApp -> Sub Update
+subscriptions model =
+    if model.modelFocusApp_showRunModal then
+        Browser.Events.onKeyDown (escapeKeyDecoder |> Decode.map Update_SetRunModal)
+
+    else
+        Sub.none
+
+
+escapeKeyDecoder : Decode.Decoder Bool
+escapeKeyDecoder =
+    Decode.field "key" Decode.string
+        |> Decode.andThen
+            (\key ->
+                if key == "Escape" then
+                    Decode.succeed False
+
+                else
+                    Decode.fail "Not escape"
+            )
