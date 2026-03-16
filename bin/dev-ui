@@ -33,8 +33,6 @@ ln -s "$(
 )/css/bootstrap.min.css" \
   "$rootDir/ui/build/css/bootstrap.min.css"
 
-ln -s "$rootDir/ui/build/Elm.js" "$rootDir/ui/build/js/Elm.js"
-
 # Note: using `watchman cwatch-project`
 # would not support working in a non-default git-worktree or jj-workspace.
 # Remark(resiliency): if the systemd unit in watchman fails,

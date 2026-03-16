@@ -5,7 +5,7 @@
             "inputs": [
                 "src/Main.elm"
             ],
-            "output": "build/Elm.js"
+            "output": "build/js/Elm.js"
         }
     }
 }
