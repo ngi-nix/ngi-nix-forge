@@ -1,4 +1,4 @@
-module Main.Format exposing (format)
+module Main.Helpers.Format exposing (format)
 
 
 format : String -> List String -> String

@@ -4,7 +4,7 @@ import Dict
 import Http
 import Main.Config exposing (..)
 import Main.Config.App exposing (..)
-import Main.Http as Http
+import Main.Helpers.Http as Http
 import Main.Model exposing (..)
 import Main.Ports.Clipboard as Clipboard
 import Main.Ports.Navigation

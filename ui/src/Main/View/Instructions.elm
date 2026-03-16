@@ -4,7 +4,7 @@ import Html exposing (Html, a, button, code, div, h2, hr, p, pre, text)
 import Html.Attributes exposing (class, href, style, target)
 import Html.Events exposing (onClick)
 import Main.Config.App exposing (App)
-import Main.Format exposing (format)
+import Main.Helpers.Format exposing (format)
 import Main.Model exposing (ModalTab(..))
 
 

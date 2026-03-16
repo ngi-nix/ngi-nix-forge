@@ -1,4 +1,4 @@
-module Main.Http exposing (..)
+module Main.Helpers.Http exposing (..)
 
 import Http
 import String
