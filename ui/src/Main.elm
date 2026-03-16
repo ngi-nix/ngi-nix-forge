@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import AppUrl
 import Browser
+import Json.Encode
 import Main.Config
 import Main.Config.App exposing (..)
 import Main.Model exposing (..)
@@ -38,18 +39,13 @@ init href =
             ( model, Cmd.none )
 
         Just url ->
-            let
-                appUrl =
-                    url |> AppUrl.fromUrl
-            in
-            case appUrl |> Main.Route.fromAppUrl of
-                Err err ->
-                    ( { model | model_focus = ModelFocus_Error { msg = Main.Route.showRouteError err } }
-                    , Cmd.none
+            model
+                |> update
+                    (Update_Navigation
+                        { appUrl = url |> AppUrl.fromUrl
+                        , state = Json.Encode.null
+                        }
                     )
-
-                Ok route ->
-                    model |> update (Update_Route route)
 
 
 subscriptions : Model -> Sub Update
