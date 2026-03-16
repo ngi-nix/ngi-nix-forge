@@ -4,7 +4,6 @@ import Html exposing (Html, a, button, code, div, h2, h4, hr, p, pre, text)
 import Html.Attributes exposing (class, href, id, style, target)
 import Html.Events exposing (onClick)
 import Main.Config.App exposing (App)
-import Main.Helpers.Format exposing (dedent, format)
 import Main.Model exposing (ModalTab(..), ModelFocusApp)
 import Markdown.Parser
 import Markdown.Renderer exposing (defaultHtmlRenderer)
@@ -43,14 +42,18 @@ viewInstructionsNixInstall onCopy =
         , a [ href "https://zero-to-nix.com/start/install", target "_blank" ]
             [ text "(learn more about this installer)." ]
         ]
-    , codeBlock onCopy <| """
-        curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
-
-        # to uninstall, run:
-        $ /nix/nix-installer uninstall
-        """
+    , codeBlock onCopy <|
+        String.join "\n"
+            [ "curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install"
+            , ""
+            , "# to uninstall, run:"
+            , "$ /nix/nix-installer uninstall"
+            ]
     , text "2. Accept binaries pre-built by Nix Forge (optional, highly recommended) "
-    , codeBlock onCopy """export NIX_CONFIG="accept-flake-config = true\""""
+    , codeBlock onCopy <|
+        String.join "\n"
+            [ "export NIX_CONFIG='accept-flake-config = true'"
+            ]
     , p [ style "margin-bottom" "0em" ] [ text "and select an application to see the usage instructions." ]
     ]
 
@@ -71,10 +74,17 @@ viewInstructionsApp repositoryUrl recipeDirApps onCopy maybeApp modalTab =
                                 div []
                                     [ p [ style "margin-bottom" "0em" ] [ text "Run application programs (CLI, GUI) in a shell environment" ]
                                     , hr [] []
-                                    , codeBlock onCopy <| format (dedent """
-                                      nix shell \\
-                                        --extra-experimental-features "nix-command flakes" \\
-                                        {0}#{1}""") [ repositoryUrl, app.app_name ]
+                                    , codeBlock onCopy <|
+                                        String.join "\n"
+                                            [ "nix shell \\"
+                                            , "  --extra-experimental-features 'nix-command flakes' \\"
+                                            , String.concat
+                                                [ "  "
+                                                , repositoryUrl
+                                                , "#"
+                                                , app.app_name
+                                                ]
+                                            ]
                                     ]
 
                             else
@@ -86,16 +96,24 @@ viewInstructionsApp repositoryUrl recipeDirApps onCopy maybeApp modalTab =
                                     [ p [ style "margin-bottom" "0em" ] [ text "Run application services using OCI containers" ]
                                     , hr [] []
                                     , codeBlock onCopy <|
-                                        format (dedent """
-                                        nix build \\
-                                          --extra-experimental-features "nix-command flakes" \\
-                                          {0}#{1}.container && ./result/bin/build-oci
-
-                                        podman load < *.tar
-
-                                        podman-compose --profile services \\
-                                          --file $(pwd)/result/compose.yaml up --force-recreate
-                                        """) [ repositoryUrl, app.app_name ]
+                                        String.join "\n"
+                                            [ " nix build \\"
+                                            , "   --extra-experimental-features 'nix-command flakes' \\"
+                                            , String.concat
+                                                [ "  "
+                                                , repositoryUrl
+                                                , "#"
+                                                , app.app_name
+                                                , ".container"
+                                                , " &&"
+                                                ]
+                                            , "./result/bin/build-oci"
+                                            , ""
+                                            , " podman load < *.tar"
+                                            , ""
+                                            , " podman-compose --profile services \\"
+                                            , "   --file $(pwd)/result/compose.yaml up --force-recreate"
+                                            ]
                                     ]
 
                             else
@@ -106,10 +124,18 @@ viewInstructionsApp repositoryUrl recipeDirApps onCopy maybeApp modalTab =
                                 div []
                                     [ p [ style "margin-bottom" "0em" ] [ text "Run application services in Nixos vm" ]
                                     , hr [] []
-                                    , codeBlock onCopy <| format (dedent """
-                                    nix run \\
-                                      --extra-experimental-features "nix-command flakes" \\
-                                      {0}#{1}.vm""") [ repositoryUrl, app.app_name ]
+                                    , codeBlock onCopy <|
+                                        String.join "\n"
+                                            [ "nix run \\"
+                                            , "  --extra-experimental-features 'nix-command flakes' \\"
+                                            , String.concat
+                                                [ "  "
+                                                , repositoryUrl
+                                                , "#"
+                                                , app.app_name
+                                                , ".vm"
+                                                ]
+                                            ]
                                     ]
 
                             else
@@ -145,7 +171,7 @@ customRenderer onCopy =
     { defaultHtmlRenderer
         | codeBlock =
             \block ->
-                block.body |> dedent |> codeBlock onCopy
+                block.body |> codeBlock onCopy
     }
 
 
@@ -158,7 +184,6 @@ usageInstructions onCopy model =
             , div [ class "markdown-content" ]
                 (model.modelFocusApp_app.app_usage
                     |> String.trim
-                    |> dedent
                     |> renderMarkdown onCopy
                 )
             ]
