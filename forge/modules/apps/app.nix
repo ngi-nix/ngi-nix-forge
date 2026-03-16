@@ -46,7 +46,7 @@
         lib.mapAttrs (
           _name: value:
           let
-            command = if lib.isDerivation value.command then value.command.meta.mainProgram else value.command;
+            command = if lib.isDerivation value.command then lib.getExe value.command else value.command;
           in
           {
             process.argv = [ command ] ++ value.argv;
