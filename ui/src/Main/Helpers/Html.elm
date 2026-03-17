@@ -2,7 +2,7 @@ module Main.Helpers.Html exposing (..)
 
 import Html exposing (Attribute, Html, button, code, div, pre, text)
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
+import Html.Events
 import Json.Decode
 
 

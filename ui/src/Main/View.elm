@@ -46,7 +46,7 @@ view model =
         ]
 
 
-viewTitle : Html update
+viewTitle : Html Update
 viewTitle =
     h3
         []
@@ -55,6 +55,7 @@ viewTitle =
             , style "color" "inherit"
             , style "text-decoration" "none"
             , style "cursor" "pointer"
+            , onClick (Update_Route (Route_Search ""))
             ]
             [ text "NGI Nix Forge" ]
         ]
