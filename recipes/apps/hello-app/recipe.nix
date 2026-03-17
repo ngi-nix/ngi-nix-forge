@@ -10,13 +10,13 @@
   version = "1.0.0";
   description = "Say hello in multiple languages.";
 
-  services.default = {
+  services.greet = {
     command = pkgs.mypkgs.hello;
-
     argv = [
       "--greeting"
-      "Hello"
+      "$GREETING"
     ];
+    environment = [ "GREETING=Hello, how are you ?" ];
   };
 
   programs = {
@@ -31,6 +31,7 @@
     name = "hello";
     tag = "latest";
     requirements = [ pkgs.mypkgs.hello ];
+    imageConfig.Env = [ "GREETING=Hola, cómo estás?" ];
     composeFile = ./compose.yaml;
   };
 }
