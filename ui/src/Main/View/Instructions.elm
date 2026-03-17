@@ -100,8 +100,8 @@ viewInstructionsApp repositoryUrl recipeDirApps onCopy maybeApp modalTab =
                                     , hr [] []
                                     , codeBlock onCopy <|
                                         String.join "\n"
-                                            [ " nix build \\"
-                                            , "   --extra-experimental-features 'nix-command flakes' \\"
+                                            [ "nix build \\"
+                                            , "  --extra-experimental-features 'nix-command flakes' \\"
                                             , String.concat
                                                 [ "  "
                                                 , repositoryUrl
@@ -112,10 +112,10 @@ viewInstructionsApp repositoryUrl recipeDirApps onCopy maybeApp modalTab =
                                                 ]
                                             , "./result/bin/build-oci"
                                             , ""
-                                            , " podman load < *.tar"
+                                            , "podman load < *.tar"
                                             , ""
-                                            , " podman-compose --profile services \\"
-                                            , "   --file $(pwd)/result/compose.yaml up --force-recreate"
+                                            , "podman-compose --profile services \\"
+                                            , "  --file $(pwd)/result/compose.yaml up --force-recreate"
                                             ]
                                     ]
 
