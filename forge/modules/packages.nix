@@ -16,6 +16,7 @@ in
     ./builders/standard-builder.nix
     ./builders/python-app-builder.nix
     ./builders/python-package-builder.nix
+    ./builders/rust-package-builder
   ];
 
   options = {
