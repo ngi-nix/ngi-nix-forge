@@ -11,6 +11,7 @@ rec {
   description = "Modern full-featured open source secure mail server for low-maintenance self-hosted email";
   homePage = "https://github.com/mjl-/mox";
   mainProgram = "mox";
+  license = lib.licenses.mit;
 
   source = {
     git = "github:mjl-/mox/v${version}";

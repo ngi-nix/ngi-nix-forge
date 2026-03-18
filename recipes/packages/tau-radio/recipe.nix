@@ -11,6 +11,7 @@
   description = "Web radio - Hijacks audio device using CLAP and Ogg/Opus";
   homePage = "https://github.com/tau-org/tau-radio";
   mainProgram = "tau-radio";
+  license = lib.licenses.eupl12;
 
   source = {
     git = "github:tau-org/tau-radio/1847e4b4d91e941c19072752ed3afa95f2941a68";

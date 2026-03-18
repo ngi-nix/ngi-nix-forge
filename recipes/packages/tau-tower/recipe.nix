@@ -11,6 +11,7 @@
   description = "Webradio server - broadcasts audio source to clients";
   homePage = "https://github.com/tau-org/tau-tower";
   mainProgram = "tau-tower";
+  license = lib.licenses.eupl12;
 
   source = {
     git = "github:tau-org/tau-tower/26908437b568c80fc470934948067341e581d43e";
