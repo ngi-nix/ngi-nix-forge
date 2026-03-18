@@ -5,7 +5,7 @@ import Json.Decode as Decode exposing (Decoder)
 import List
 import Main.Config.App as Config exposing (..)
 import Main.Error exposing (..)
-import Main.Nix exposing (..)
+import Main.Helpers.Nix exposing (..)
 import Url exposing (Url)
 
 

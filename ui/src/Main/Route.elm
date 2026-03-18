@@ -7,7 +7,7 @@ import Json.Encode
 import List.Extra as List
 import Main.Config.App exposing (..)
 import Main.Error exposing (..)
-import Main.Nix exposing (..)
+import Main.Helpers.Nix exposing (..)
 
 
 {-| Description: a route is an address.

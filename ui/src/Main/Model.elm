@@ -3,7 +3,7 @@ module Main.Model exposing (..)
 import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Error exposing (..)
-import Main.Nix exposing (..)
+import Main.Helpers.Nix exposing (..)
 import Main.Route exposing (..)
 import Main.Theme exposing (Theme)
 

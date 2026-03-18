@@ -1,7 +1,7 @@
 module Main.View exposing (..)
 
 import Dict
-import Html exposing (Html, a, code, div, footer, h3, h5, h6, header, hr, input, li, main_, nav, p, section, small, span, text, ul)
+import Html exposing (Html, a, button, code, div, footer, h3, h5, h6, header, hr, input, li, main_, nav, p, section, small, span, text, ul)
 import Html.Attributes exposing (attribute, class, href, id, name, placeholder, rel, style, tabindex, target, title, type_, value)
 import Html.Events exposing (onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
@@ -10,9 +10,9 @@ import Main.Config.App exposing (..)
 import Main.Error
 import Main.Helpers.Html exposing (..)
 import Main.Helpers.Markdown as Markdown
+import Main.Helpers.Nix exposing (..)
 import Main.Icons exposing (..)
 import Main.Model exposing (..)
-import Main.Nix exposing (..)
 import Main.Route as Route exposing (..)
 import Main.Subscriptions exposing (decodeEscapeKey)
 import Main.Theme exposing (Theme(..))
@@ -20,6 +20,7 @@ import Main.Update exposing (..)
 import Main.View.Instructions exposing (..)
 
 
+commit : String
 commit =
     ":master"
 
@@ -63,7 +64,7 @@ view model =
             [ section [] [ model |> viewPage ] ]
         , footer
             [ class "mt-auto py-3 border-top" ]
-            [ viewPoweredBy ]
+            [ viewPoweredBy model ]
         ]
 
 
@@ -277,7 +278,7 @@ viewPageApp model pageApp =
                         [ text ("v" ++ pageApp.pageApp_app.app_version) ]
                     ]
                 ]
-            , Html.button
+            , button
                 [ class "btn btn-success"
                 , let
                     route =
@@ -553,7 +554,7 @@ viewPageAppRun model pageApp =
                     [ div [ class "modal-content" ]
                         [ div [ class "modal-header" ]
                             [ h5 [ class "modal-title" ] [ text ("Run " ++ pageApp.pageApp_route.routeApp_name) ]
-                            , Html.button
+                            , button
                                 [ class "btn-close"
                                 , let
                                     route =
@@ -602,7 +603,7 @@ viewPageAppRunOuputs model pageApp =
 viewPageAppRunOuput : Model -> PageApp -> AppOutput -> Html Update
 viewPageAppRunOuput model pageApp appOutput =
     li [ class "nav-item" ]
-        [ Html.button
+        [ button
             [ class
                 ([ "nav-link"
                  , if Just appOutput == pageApp.pageApp_route.routeApp_runOutput then
@@ -663,8 +664,8 @@ viewPageRecipeOption model pageRecipeOptions ( optionName, option ) =
         ]
 
 
-viewPoweredBy : Html update
-viewPoweredBy =
+viewPoweredBy : Model -> Html update
+viewPoweredBy model =
     div
         [ class "text-secondary"
         , style "display" "flex"
@@ -699,17 +700,17 @@ viewPoweredBy =
         , span []
             [ text " Contribute or report issues at "
             , a
-                [ href "https://github.com/ngi-nix/forge"
+                [ href (model.model_config.config_repository |> showNixUrl)
                 , target "_blank"
                 ]
-                [ text "ngi-nix/forge" ]
+                [ text (model.model_config.config_repository |> showGithubRepoSlug) ]
             , text "."
             ]
         , if not (String.contains "master" commit) then
             span []
                 [ text " Version "
                 , a
-                    [ href ("https://github.com/ngi-nix/forge/commit/" ++ commit)
+                    [ href ((model.model_config.config_repository |> showNixUrl) ++ "/commit/" ++ commit)
                     , target "_blank"
                     ]
                     [ text commit ]
