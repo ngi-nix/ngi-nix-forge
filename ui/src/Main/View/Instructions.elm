@@ -6,7 +6,6 @@ import Main.Config.App exposing (..)
 import Main.Helpers.Html exposing (..)
 import Main.Helpers.Markdown as Markdown
 import Main.Model exposing (..)
-import Main.Nix exposing (..)
 import Main.Route exposing (..)
 import Main.Update exposing (..)
 
@@ -66,7 +65,7 @@ viewPageAppInstructions model pageApp =
                             AppOutput_Programs ->
                                 if pageApp.pageApp_app.app_programs.enable then
                                     div []
-                                        [ p [ style "margin-bottom" "0em" ] [ text "Run application programs (CLI, GUI) in a shell environment" ]
+                                        [ p [ style "margin-bottom" "0em" ] [ text "Create and enter a shell environment for (CLI, GUI) programs." ]
                                         , hr [] []
                                         , codeBlock Update_CopyCode <|
                                             String.join "\n"
@@ -87,7 +86,7 @@ viewPageAppInstructions model pageApp =
                             AppOutput_Container ->
                                 if pageApp.pageApp_app.app_container.enable then
                                     div []
-                                        [ p [ style "margin-bottom" "0em" ] [ text "Run application services using OCI containers" ]
+                                        [ p [ style "margin-bottom" "0em" ] [ text "Run application services using OCI containers." ]
                                         , hr [] []
                                         , codeBlock Update_CopyCode <|
                                             String.join "\n"
@@ -116,7 +115,7 @@ viewPageAppInstructions model pageApp =
                             AppOutput_VM ->
                                 if pageApp.pageApp_app.app_vm.enable then
                                     div []
-                                        [ p [ style "margin-bottom" "0em" ] [ text "Run application services in Nixos vm" ]
+                                        [ p [ style "margin-bottom" "0em" ] [ text "Run application services in a NixOS VM." ]
                                         , hr [] []
                                         , codeBlock Update_CopyCode <|
                                             String.join "\n"
@@ -144,19 +143,4 @@ viewPageAppInstructions model pageApp =
           else
             text ""
         , instructions
-        , hr [] []
-        , text "Recipe: "
-        , a
-            [ href
-                (String.join "/"
-                    [ model.model_config.config_repository |> showNixUrl
-                    , "blob/master"
-                    , model.model_config.config_recipe.configRecipe_apps
-                    , pageApp.pageApp_app.app_name
-                    , "recipe.nix"
-                    ]
-                )
-            , target "_blank"
-            ]
-            [ text (model.model_config.config_recipe.configRecipe_apps ++ "/" ++ pageApp.pageApp_app.app_name ++ "/recipe.nix") ]
         ]

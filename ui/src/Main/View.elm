@@ -1,7 +1,7 @@
 module Main.View exposing (..)
 
 import Dict
-import Html exposing (Html, a, div, footer, h2, h5, header, input, li, main_, nav, p, section, small, span, text, ul)
+import Html exposing (Html, a, div, footer, h2, h3, h5, header, input, li, main_, nav, p, section, small, span, text, ul)
 import Html.Attributes exposing (attribute, class, href, id, name, placeholder, style, tabindex, target, title, type_, value)
 import Html.Events exposing (onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
@@ -11,6 +11,7 @@ import Main.Error
 import Main.Helpers.Html exposing (..)
 import Main.Icons exposing (circleHalf, moonStarsFill, search, sunFill)
 import Main.Model exposing (..)
+import Main.Nix exposing (showNixUrl)
 import Main.Route as Route exposing (..)
 import Main.Theme exposing (Theme(..))
 import Main.Update exposing (..)
@@ -239,8 +240,11 @@ viewPageApp model pageApp =
             , style "padding-bottom" "0.5rem"
             ]
             [ div []
-                [ h2 [ style "margin" "0" ] [ text pageApp.pageApp_route.routeApp_name ]
-                , text ("v" ++ pageApp.pageApp_app.app_version)
+                [ h3 [ style "margin" "0" ] [ text pageApp.pageApp_route.routeApp_name ]
+                , small
+                    [ class "text-muted"
+                    ]
+                    [ text ("version: " ++ "v" ++ pageApp.pageApp_app.app_version) ]
                 ]
             , Html.button
                 [ class "btn btn-success"
@@ -252,9 +256,30 @@ viewPageApp model pageApp =
                 ]
                 [ text "Run" ]
             ]
-        , div [ class "lead mb-4" ]
+        , div [ class "mb-4" ]
             [ text pageApp.pageApp_app.app_description ]
+        , viewRecipeLink model pageApp
         , viewPageAppRun model pageApp
+        ]
+
+
+viewRecipeLink : Model -> PageApp -> Html update
+viewRecipeLink model pageApp =
+    div []
+        [ text "Recipe: "
+        , a
+            [ href
+                (String.join "/"
+                    [ model.model_config.config_repository |> showNixUrl
+                    , "blob/master"
+                    , model.model_config.config_recipe.configRecipe_apps
+                    , pageApp.pageApp_app.app_name
+                    , "recipe.nix"
+                    ]
+                )
+            , target "_blank"
+            ]
+            [ text (model.model_config.config_recipe.configRecipe_apps ++ "/" ++ pageApp.pageApp_app.app_name ++ "/recipe.nix") ]
         ]
 
 
