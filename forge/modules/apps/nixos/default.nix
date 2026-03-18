@@ -162,7 +162,17 @@
         }
         {
           # modular services
-          system = { inherit (app) services; };
+          system = {
+            services = lib.mapAttrs (
+              name: value:
+              lib.recursiveUpdate (lib.removeAttrs value [ "passthru" ]) {
+                systemd.mainExecStart = lib.escapeShellArgs value.process.argv;
+                systemd.service.environment = value.passthru.environment;
+              }
+            ) app.services;
+          };
+
+          environment.variables = lib.concatMapAttrs (_: value: value.passthru.environment) app.services;
         }
         config.extraConfig
       ];

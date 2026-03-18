@@ -38,7 +38,6 @@
       // allPackages
 
       # All packages passthru attributes
-      // (passthruAttr "image")
       // (passthruAttr "devenv")
       // (passthruAttr "test")
 

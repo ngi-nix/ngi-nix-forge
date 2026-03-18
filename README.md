@@ -32,7 +32,6 @@ graph TB
         PO4[Nix Package]
         PO1[Development Environment]
         PO2[Shell Environment]
-        PO3[Container Image]
     end
 
     APP[Application Recipe<br/>recipe.nix]
@@ -52,14 +51,13 @@ graph TB
     end
 
     SW1 & SW2 & SW3 & NIXPKGS--> PKG
-    PKG --> PO1 & PO2 & PO3 & PO4
+    PKG --> PO1 & PO2 & PO4
 
     PO4 & NIXPKGS --> APP
     APP --> AO1
     APP --> AO2
     APP --> AO3
 
-    PO3 --> REG
     AO2 --> REG
 
     AO1 --> SHELL

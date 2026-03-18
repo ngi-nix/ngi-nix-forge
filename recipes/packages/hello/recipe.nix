@@ -11,6 +11,7 @@
   description = "Hello package built from source code tarball.";
   homePage = "https://www.gnu.org/software/hello";
   mainProgram = "hello";
+  license = lib.licenses.gpl3Plus;
 
   source = {
     url = "mirror://gnu/hello/hello-2.12.1.tar.gz";

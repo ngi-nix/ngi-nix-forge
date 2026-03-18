@@ -11,6 +11,7 @@
   description = "Python HTTP library for humans.";
   homePage = "https://requests.readthedocs.io";
   mainProgram = ""; # No main program - this is a library
+  license = lib.licenses.asl20;
 
   source = {
     git = "github:psf/requests/v2.32.5";

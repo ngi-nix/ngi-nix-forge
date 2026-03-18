@@ -11,6 +11,7 @@
   description = "GDAL package built from GitHub source.";
   homePage = "https://gdal.org";
   mainProgram = "gdalinfo";
+  license = lib.licenses.mit;
 
   source = {
     git = "github:OSGeo/gdal/3679e5e4511ae8b4a956ded7ef7be23fdb86b7db";

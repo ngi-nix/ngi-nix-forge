@@ -88,12 +88,37 @@
     result.nimi.config = {
       settings.container = {
         copyToRoot = config.requirements;
-        inherit (config) imageConfig;
+        imageConfig = config.imageConfig // {
+          Env =
+            let
+              # [ "K=V" ] -> { K = "V"; }
+              envListToAttrs =
+                list:
+                lib.pipe list [
+                  (map (envPair: lib.splitString "=" envPair))
+                  (map (envPairSplit: {
+                    name = lib.head envPairSplit;
+                    value = lib.concatStringsSep "=" (lib.tail envPairSplit);
+                  }))
+                  (lib.listToAttrs)
+                ];
+
+              # { K = "V"; } -> [ "K=V" ]
+              envAttrsToList = attrs: lib.mapAttrsToList (n: v: "${n}=${v}") attrs;
+
+              appEnv = lib.concatMapAttrs (_: value: value.passthru.environment) app.services;
+              containerEnv = envListToAttrs config.imageConfig.Env or [ ];
+
+              # NOTE: we merge Attrs to remove duplicate keys
+              envList = appEnv // containerEnv;
+            in
+            envAttrsToList envList;
+        };
       };
 
       services = lib.mapAttrs (serviceName: service: {
         imports = [
-          service
+          (lib.removeAttrs service [ "passthru" ])
           {
             options.nimi = lib.mkOption {
               type = with lib.types; lazyAttrsOf (attrsOf anything);

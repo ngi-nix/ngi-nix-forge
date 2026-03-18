@@ -50,7 +50,6 @@ jobs:
         working-directory: /tmp/template-test
         run: |
           nix build .#hello-nix --accept-flake-config
-          nix build .#hello-nix.image --accept-flake-config
 
       - name: Build hello-app
         working-directory: /tmp/template-test

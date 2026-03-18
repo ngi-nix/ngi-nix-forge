@@ -86,5 +86,37 @@
             "services"
           ] getOptions
         );
+
+      forge.packagesFilter =
+        let
+          optionNames = lib.attrNames forgeOptions.optionsNix;
+
+          # NOTE: don't forget to update these, if they change
+          commonOptions = [
+            "packages.*.name"
+            "packages.*.version"
+            "packages.*.source.git"
+            "packages.*.source.patches"
+            "packages.*.test.script"
+          ];
+
+          filterOptions = pred: lib.filter pred optionNames;
+
+          getOptions =
+            builderType:
+            let
+              pattern = "packages\\.\\*\\.build\\.${builderType}(\\..+)?";
+              matchedOptions = filterOptions (name: lib.match pattern name != null);
+              combinedOptions = commonOptions ++ matchedOptions;
+            in
+            lib.unique combinedOptions;
+        in
+        lib.mkDefault (
+          lib.genAttrs [
+            "standardBuilder"
+            "pythonAppBuilder"
+            "pythonPackageBuilder"
+          ] getOptions
+        );
     };
 }

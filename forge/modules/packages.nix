@@ -14,8 +14,10 @@ in
     ./assertions-warnings.nix
     ./builders/shared.nix
     ./builders/standard-builder.nix
+    ./builders/go-builder.nix
     ./builders/python-app-builder.nix
     ./builders/python-package-builder.nix
+    ./builders/rust-package-builder
   ];
 
   options = {
@@ -27,46 +29,6 @@ in
             packagesFilter = lib.mkOption {
               internal = true;
               type = lib.types.attrsOf (lib.types.listOf lib.types.str);
-              default = {
-                standardBuilder = [
-                  "packages.*.name"
-                  "packages.*.version"
-                  "packages.*.source.git"
-                  "packages.*.source.patches"
-                  "packages.*.build.standardBuilder.enable"
-                  "packages.*.build.standardBuilder.requirements.native"
-                  "packages.*.build.standardBuilder.requirements.build"
-                  "packages.*.test.script"
-                ];
-                pythonAppBuilder = [
-                  "packages.*.name"
-                  "packages.*.version"
-                  "packages.*.source.git"
-                  "packages.*.source.patches"
-                  "packages.*.build.pythonAppBuilder.enable"
-                  "packages.*.build.pythonAppBuilder.requirements.build-system"
-                  "packages.*.build.pythonAppBuilder.requirements.dependencies"
-                  "packages.*.build.pythonAppBuilder.requirements.optional-dependencies"
-                  "packages.*.build.pythonAppBuilder.importsCheck"
-                  "packages.*.build.pythonAppBuilder.relaxDeps"
-                  "packages.*.build.pythonAppBuilder.disabledTests"
-                  "packages.*.test.script"
-                ];
-                pythonPackageBuilder = [
-                  "packages.*.name"
-                  "packages.*.version"
-                  "packages.*.source.git"
-                  "packages.*.source.patches"
-                  "packages.*.build.pythonPackageBuilder.enable"
-                  "packages.*.build.pythonPackageBuilder.requirements.build-system"
-                  "packages.*.build.pythonPackageBuilder.requirements.dependencies"
-                  "packages.*.build.pythonPackageBuilder.requirements.optional-dependencies"
-                  "packages.*.build.pythonPackageBuilder.importsCheck"
-                  "packages.*.build.pythonPackageBuilder.relaxDeps"
-                  "packages.*.build.pythonPackageBuilder.disabledTests"
-                  "packages.*.test.script"
-                ];
-              };
               description = ''
                 Defines which configuration options are relevant for each builder type.
 
@@ -116,6 +78,18 @@ in
                       default = "my-program";
                       description = "Name of the main executable program.";
                       example = "hello";
+                    };
+                    license = lib.mkOption {
+                      type =
+                        with lib.types;
+                        oneOf [
+                          attrs # lib.licenses.gpl3Only
+                          str # "gpl3Only"
+                          (listOf (either attrs str))
+                        ];
+                      default = [ ];
+                      description = "License, or licenses, for the package.";
+                      example = lib.literalExpression "lib.licenses.gpl3Only";
                     };
 
                     # Source configuration
@@ -287,35 +261,60 @@ in
           {
             # Collect warnings from packages
             warnings = lib.flatten (
-              map (pkg: {
-                condition = pkg.source.hash == "";
-                message = ''
-                  Package '${pkg.name}': source.hash is empty.
-                  Correct hash will be printed in the error message when package is built.
-                '';
-              }) cfg
+              map (pkg: [
+                {
+                  condition = pkg.source.hash == "";
+                  message = ''
+                    Package '${pkg.name}': source.hash is empty.
+                    Correct hash will be printed in the error message when package is built.
+                  '';
+                }
+                {
+                  condition = pkg.license == [ ];
+                  message = ''
+                    Package '${pkg.name}': license is empty.
+                  '';
+                }
+              ]) cfg
             );
 
             # Collect assertions from packages
             assertions = lib.flatten (
-              map (pkg: [
-                {
-                  condition = !(pkg.source.git == null && pkg.source.url == null && pkg.source.path == null);
-                  message = ''
-                    Package '${pkg.name}': one of sources options must be defined.
-                    Available options: source.git, source.url, or source.path.
-                  '';
-                }
-                {
-                  condition =
-                    pkg.build.standardBuilder.enable
-                    || pkg.build.pythonAppBuilder.enable
-                    || pkg.build.pythonPackageBuilder.enable;
-                  message = ''
-                    Package '${pkg.name}': one of builder options must be enabled.
-                    Available options: build.standardBuilder, build.pythonAppBuilder, or build.pythonPackageBuilder.'';
-                }
-              ]) cfg
+              map (
+                pkg:
+                let
+                  builders = lib.filterAttrs (name: _: lib.hasSuffix "Builder" name) pkg.build;
+                  builderNames = map (name: "build." + name) (lib.attrNames builders);
+
+                  enabledBuilders = lib.filterAttrs (_: b: b.enable) builders;
+                  enabledBuilderNames = map (name: "build." + name) (lib.attrNames enabledBuilders);
+
+                  enabledBuildersCount = lib.length enabledBuilderNames;
+                in
+                [
+                  {
+                    condition = !(pkg.source.git == null && pkg.source.url == null && pkg.source.path == null);
+                    message = ''
+                      Package '${pkg.name}': one of sources options must be defined.
+                      Available options: source.git, source.url, or source.path.
+                    '';
+                  }
+                  {
+                    condition = !(enabledBuildersCount != 1);
+                    message = ''
+                      Package '${pkg.name}': only one builder can be enabled at a time.
+                      Enabled options: ${lib.concatStringsSep ", " enabledBuilderNames}.
+                    '';
+                  }
+                  {
+                    condition = !(enabledBuildersCount == 0);
+                    message = ''
+                      Package '${pkg.name}': one of builder options must be enabled.
+                      Available options: ${lib.concatStringsSep ", " builderNames}.
+                    '';
+                  }
+                ]
+              ) cfg
             );
 
             # Evaluation check: show warnings first, then throw on failed assertions

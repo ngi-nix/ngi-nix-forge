@@ -53,16 +53,6 @@ in
               buildInputs = [ finalPkg ] ++ pkg.test.requirements;
               script = pkg.test.script + "\ntouch $out";
             };
-            image = pkgs.dockerTools.buildImage {
-              name = "${pkg.name}";
-              tag = pkg.version;
-              copyToRoot = [
-                finalPkg
-              ];
-              config = {
-                Entrypoint = [ "${pkgs.bashInteractive}/bin/bash" ];
-              };
-            };
             devenv = pkgs.mkShell {
               env.DEVENV_PACKAGE_NAME = "${pkg.name}";
               env.DEVENV_PACKAGE_SOURCE = "${finalPkg.src}";
@@ -77,6 +67,7 @@ in
           pkgMeta = pkg: {
             description = pkg.description;
             mainProgram = pkg.mainProgram;
+            license = pkg.license;
           };
 
           debugShellHookAttr = {

@@ -11,6 +11,7 @@
   description = "GEOS package built from GitHub source with version set using custom patch.";
   homePage = "https://libgeos.org";
   mainProgram = "geosop";
+  license = lib.licenses.lgpl21Only;
 
   source = {
     git = "github:libgeos/geos/883f237d1ecbf49f8efd09905df05814783c5b50";

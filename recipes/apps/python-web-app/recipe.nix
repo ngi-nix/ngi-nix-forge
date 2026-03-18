@@ -32,6 +32,10 @@
     ```
   '';
 
+  services.python-web = {
+    command = pkgs.mypkgs.python-web;
+  };
+
   programs = {
     enable = true;
     requirements = [
@@ -58,11 +62,6 @@
         host all all 0.0.0.0/0 trust
         host all all ::0/0 trust
       '';
-      # python-web service
-      systemd.services.python-web.script = "${pkgs.mypkgs.python-web}/bin/python-web";
-      systemd.services.python-web.wantedBy = [
-        "multi-user.target"
-      ];
     };
     vm.forwardPorts = [
       "5000:5000"
