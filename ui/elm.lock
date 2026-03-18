@@ -67,6 +67,12 @@
     },
     {
         "author": "elm",
+        "package": "svg",
+        "version": "1.0.1",
+        "sha256": "1iqsc3p129j56lp1y3z3mfc6x1shvrmx3pkhri2777ylhyw90qvl"
+    },
+    {
+        "author": "elm",
         "package": "time",
         "version": "1.0.0",
         "sha256": "0wqa2vhl1zf8z0j2yd3yjwfhr0dydfns43bbzll3k4rhnjadxr1l"
