@@ -15,7 +15,8 @@ function onExit {
   clean
   systemctl --user stop ${slice}.slice
   systemctl --user reset-failed ${unit}-'*'.service
-  watchman trigger-del . "$unit"
+  watchman trigger-del . "$unit-config"
+  watchman trigger-del . "$unit-options"
   watchman watch-del .
 }
 
@@ -47,7 +48,7 @@ watchman -j <<EOT
 [ "trigger"
 , "$PWD"
 , {
-    "name": "$unit",
+    "name": "$unit-config",
     "command": [ "systemd-run", "--user", "--pipe", "--slice", "$slice", "-u", "${unit}-config"
                , "nix", "build", "-f", "$rootDir", "_forge-config", "-o", "$rootDir/ui/build/forge-config.json", "--show-trace"
                ],
@@ -66,6 +67,24 @@ watchman -j <<EOT
         "wholename",
         {"includedotfiles": false}
       ]
+    ]
+  }
+]
+EOT
+watchman -j <<EOT
+[ "trigger"
+, "$PWD"
+, {
+    "name": "$unit-options",
+    "command": [ "systemd-run", "--user", "--pipe", "--slice", "$slice", "-u", "${unit}-options"
+               , "nix", "build", "-f", "$rootDir", "_forge-options", "-o", "$rootDir/ui/build/forge-options.json", "--show-trace"
+               ],
+    "append_files": false,
+    "expression": [
+      "match",
+      "forge/**/*.nix",
+      "wholename",
+      {"includedotfiles": false}
     ]
   }
 ]
@@ -99,5 +118,4 @@ systemd-run --user --slice "$slice" -u ${unit}-esbuild \
   src/**/*.js
 
 journalctl --since "-5s" --user -f \
-  -u ${unit}-config.service \
-  -u ${slice}.slice
+  -u ${unit}-"*".service

@@ -5,6 +5,7 @@
   symlinkJoin,
 
   _forge-config,
+  _forge-options,
   ...
 }:
 
@@ -44,6 +45,7 @@ symlinkJoin {
 
     # Symlink config files
     ln -s ${_forge-config} forge-config.json
+    ln -s ${_forge-options} forge-options.json
 
     # Rename minimized Elm output
     mv js/Elm.min.js js/Elm.js
@@ -55,6 +57,10 @@ symlinkJoin {
     done
     # search route
     ln -s $out/index.html "app/index.html"
+    # recipe route
+    mkdir -p recipe/options
+    ln -s $out/index.html "recipe/index.html"
+    ln -s $out/index.html "recipe/options/index.html"
 
     popd
   '';

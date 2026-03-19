@@ -7,6 +7,7 @@ import Json.Encode
 import List.Extra as List
 import Main.Config.App exposing (..)
 import Main.Error exposing (..)
+import Main.Nix exposing (..)
 
 
 {-| Description: a route is an address.
@@ -18,6 +19,7 @@ Warning(security): it must not contain secret or sensitive data.
 type Route
     = Route_Search RouteSearch
     | Route_App RouteApp
+    | Route_RecipeOptions RouteRecipeOptions
 
 
 type alias RouteSearch =
@@ -32,6 +34,10 @@ type alias RouteApp =
     , routeApp_runShown : Bool
     , routeApp_runOutput : Maybe AppOutput
     }
+
+
+type alias RouteRecipeOptions =
+    { routeRecipeOptions_pattern : Maybe NixName }
 
 
 initRouteApp : AppName -> RouteApp
@@ -109,6 +115,14 @@ fromAppUrl url =
                             }
                         )
 
+        [ "recipe", "options" ] ->
+            Ok
+                (Route_RecipeOptions
+                    { routeRecipeOptions_pattern =
+                        url.queryParameters |> Dict.get "q" |> Maybe.andThen List.head
+                    }
+                )
+
         _ ->
             Err (ErrorRoute_Unknown url)
 
@@ -155,6 +169,25 @@ toAppUrl route =
 
                                 AppOutput_VM ->
                                     [ "vm" ]
+                  )
+                ]
+                    |> Dict.fromList
+            , fragment = Nothing
+            }
+
+        Route_RecipeOptions routeRecipe ->
+            { path = deployPath ++ [ "recipe", "options" ]
+            , queryParameters =
+                [ ( "q"
+                  , case routeRecipe.routeRecipeOptions_pattern of
+                        Nothing ->
+                            []
+
+                        Just "" ->
+                            []
+
+                        Just q ->
+                            [ q ]
                   )
                 ]
                     |> Dict.fromList

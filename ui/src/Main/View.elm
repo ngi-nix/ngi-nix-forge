@@ -1,7 +1,7 @@
 module Main.View exposing (..)
 
 import Dict
-import Html exposing (Html, a, div, footer, h3, h5, header, input, li, main_, nav, p, section, small, span, text, ul)
+import Html exposing (Html, a, code, div, footer, h3, h5, header, input, li, main_, nav, p, section, small, span, text, ul)
 import Html.Attributes exposing (attribute, class, href, id, name, placeholder, style, tabindex, target, title, type_, value)
 import Html.Events exposing (onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
@@ -9,9 +9,10 @@ import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Error
 import Main.Helpers.Html exposing (..)
-import Main.Icons exposing (moonStarsFill, search, sunFill)
+import Main.Helpers.Markdown as Markdown
+import Main.Icons exposing (..)
 import Main.Model exposing (..)
-import Main.Nix exposing (showNixUrl)
+import Main.Nix exposing (..)
 import Main.Route as Route exposing (..)
 import Main.Subscriptions exposing (decodeEscapeKey)
 import Main.Theme exposing (Theme(..))
@@ -92,13 +93,19 @@ viewSearchInput model =
             , style "padding-top" "0.5rem"
             , style "border-radius" "30px"
             , type_ "search"
-            , placeholder "Search apps"
+            , placeholder <|
+                case model.model_page of
+                    Page_RecipeOptions _ ->
+                        "Search options"
+
+                    _ ->
+                        "Search apps"
             , value model.model_search
             , id "main-search-bar"
             , onInput Update_SearchInput
             , preventDefaultOn "keydown"
                 (decodeEscapeKey
-                    |> Decode.map (\_ -> ( Update_CancelSearch, True ))
+                    |> Decode.map (\_ -> ( Update_SearchInput "", True ))
                 )
             ]
             []
@@ -130,6 +137,9 @@ viewPage model =
 
         Page_App pageApp ->
             viewPageApp model pageApp
+
+        Page_RecipeOptions pageRecipeOptions ->
+            viewPageRecipeOptions model pageRecipeOptions
 
 
 viewPageSearch : Model -> Html Update
@@ -377,6 +387,43 @@ viewPageAppRunOuput model pageApp appOutput =
               onClick (Update_Route (Route_App { route | routeApp_runOutput = Just appOutput }))
             ]
             [ text <| showAppOutput appOutput
+            ]
+        ]
+
+
+viewPageRecipeOptions : Model -> PageRecipeOptions -> Html Update
+viewPageRecipeOptions model pageRecipeOptions =
+    div [ class "list-group" ]
+        (model.model_RecipeOptions.modelRecipeOptions_filtered
+            |> Dict.toList
+            |> List.map (viewPageRecipeOption model pageRecipeOptions)
+        )
+
+
+viewPageRecipeOption : Model -> PageRecipeOptions -> ( NixName, NixModuleOption ) -> Html Update
+viewPageRecipeOption model pageRecipeOptions ( optionName, option ) =
+    a
+        [ class "list-group-item list-group-item-action flex-column align-items-start"
+        , href (Route_RecipeOptions { routeRecipeOptions_pattern = Just optionName } |> Route.toString)
+        , onClick (Update_Route (Route_RecipeOptions { routeRecipeOptions_pattern = Just optionName }))
+        ]
+        [ div [ class "d-flex w-100 justify-content-between" ]
+            [ h5
+                [ class "mb-1"
+                ]
+                [ code [] [ text optionName ]
+                ]
+            ]
+        , div []
+            [ span [ class "fw-bold" ] [ text "Type: " ]
+            , code [] [ text option.nixModuleOption_type ]
+            ]
+        , div []
+            [ span [ class "fw-bold" ] [ text "Description: " ]
+            , div []
+                (option.nixModuleOption_description
+                    |> Markdown.render
+                )
             ]
         ]
 

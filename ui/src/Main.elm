@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import AppUrl
 import Browser
+import Dict
 import Json.Encode
 import Main.Config
 import Main.Config.App exposing (..)
@@ -39,6 +40,10 @@ init flags =
             , model_page = Page_Search
             , model_errors = []
             , model_theme = themeFromString flags.theme
+            , model_RecipeOptions =
+                { modelRecipeOptions_available = Dict.empty
+                , modelRecipeOptions_filtered = Dict.empty
+                }
             }
     in
     case flags.href |> Url.fromString of
