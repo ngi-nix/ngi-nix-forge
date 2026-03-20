@@ -76,18 +76,14 @@ viewPageAppInstructions model pageApp =
                             AppOutput_Programs ->
                                 if pageApp.pageApp_app.app_programs.enable then
                                     div []
-                                        [ p [ style "margin-bottom" "0em" ] [ text "Create and enter a shell environment for (CLI, GUI) programs." ]
+                                        [ p [ style "margin-bottom" "0em" ] [ text "Enter a shell environment with CLI and GUI programs." ]
                                         , br [] []
                                         , codeBlock Update_CopyCode <|
-                                            String.join "\n"
-                                                [ "nix shell \\"
-                                                , "  --extra-experimental-features 'nix-command flakes' \\"
-                                                , String.concat
-                                                    [ "  "
-                                                    , model.model_config.config_repository
-                                                    , "#"
-                                                    , pageApp.pageApp_app.app_name
-                                                    ]
+                                            String.concat
+                                                [ "nix shell "
+                                                , model.model_config.config_repository
+                                                , "#"
+                                                , pageApp.pageApp_app.app_name
                                                 ]
                                         ]
 
@@ -101,22 +97,17 @@ viewPageAppInstructions model pageApp =
                                         , br [] []
                                         , codeBlock Update_CopyCode <|
                                             String.join "\n"
-                                                [ "nix build \\"
-                                                , "  --extra-experimental-features 'nix-command flakes' \\"
-                                                , String.concat
-                                                    [ "  "
+                                                [ String.concat
+                                                    [ "nix run "
                                                     , model.model_config.config_repository
                                                     , "#"
                                                     , pageApp.pageApp_app.app_name
                                                     , ".container"
-                                                    , " &&"
                                                     ]
-                                                , "./result/bin/build-oci"
                                                 , ""
                                                 , "podman load < *.tar"
                                                 , ""
-                                                , "podman-compose --profile services \\"
-                                                , "  --file $(pwd)/result/compose.yaml up --force-recreate"
+                                                , "podman-compose --profile services --file $(pwd)/result/compose.yaml up"
                                                 ]
                                         ]
 
@@ -129,16 +120,12 @@ viewPageAppInstructions model pageApp =
                                         [ p [ style "margin-bottom" "0em" ] [ text "Run application services in a NixOS VM." ]
                                         , br [] []
                                         , codeBlock Update_CopyCode <|
-                                            String.join "\n"
-                                                [ "nix run \\"
-                                                , "  --extra-experimental-features 'nix-command flakes' \\"
-                                                , String.concat
-                                                    [ "  "
-                                                    , model.model_config.config_repository
-                                                    , "#"
-                                                    , pageApp.pageApp_app.app_name
-                                                    , ".vm"
-                                                    ]
+                                            String.concat
+                                                [ "nix run "
+                                                , model.model_config.config_repository
+                                                , "#"
+                                                , pageApp.pageApp_app.app_name
+                                                , ".vm"
                                                 ]
                                         ]
 
