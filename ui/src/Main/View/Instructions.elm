@@ -49,13 +49,6 @@ viewInstructionsNixInstall _ =
                 , codeBlock Update_CopyCode <|
                     String.join "\n"
                         [ "export NIX_CONFIG='accept-flake-config = true'" ]
-                , p [ class "mt-3 mb-1" ]
-                    [ text "3. Configure substitutors (optional, highly recommended)" ]
-                , codeBlock Update_CopyCode <|
-                    String.join "\n"
-                        [ "export NIX_CONFIG='substituters = https://cache.nixos.org/ https://ngi.cachix.org/"
-                        , "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ngi.cachix.org-1:n+CAL72ROC3qQuLxIHpV+Tw5t42WhXmMhprAGkRSrOw='"
-                        ]
                 ]
             ]
         ]
