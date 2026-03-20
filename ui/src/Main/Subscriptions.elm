@@ -14,7 +14,16 @@ subscriptions : Model -> Sub Update
 subscriptions model =
     Sub.batch
         [ Navigation.onEvent Main.Ports.Navigation.onNavEvent Update_Navigation
-        , Browser.Events.onKeyDown decodeAmbientKeyPress
+        , case model.model_page of
+            Page_App pageApp ->
+                if pageApp.pageApp_route.routeApp_runShown then
+                    Sub.none
+
+                else
+                    Browser.Events.onKeyDown decodeAmbientKeyPress
+
+            _ ->
+                Browser.Events.onKeyDown decodeAmbientKeyPress
         , case model.model_page of
             Page_App pageApp ->
                 if pageApp.pageApp_route.routeApp_runShown then
@@ -63,9 +72,6 @@ decodeAmbientKeyPress =
                         [ "INPUT"
                         , "TEXTAREA"
                         , "SELECT"
-
-                        -- When run modal is open
-                        , "DIV"
                         ]
                 , hasModifier = modifier
                 }
