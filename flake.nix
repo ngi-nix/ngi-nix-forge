@@ -1,32 +1,27 @@
 {
-  description = "Nix Forge";
+  description = "NGI Nix Forge";
 
   nixConfig = {
-    extra-substituters = [ "https://flake-forge.cachix.org" ];
-    extra-trusted-public-keys = [
-      "flake-forge.cachix.org-1:cu8to1JK8J70jntSwC0Z2Uzu6DpwgcWTS3xiiye3Lyw="
-    ];
+    extra-substituters = [ "" ];
+    extra-trusted-public-keys = [ "" ];
   };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
+
     elm2nix = {
       url = "github:dwayne/elm2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nix-utils = {
       url = "github:imincik/nix-utils";
       flake = false;
     };
 
     nimi.url = "github:weyl-ai/nimi";
-
-    # git-hooks = {
-    #   url = "github:cachix/git-hooks.nix";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
   };
 
   outputs =
