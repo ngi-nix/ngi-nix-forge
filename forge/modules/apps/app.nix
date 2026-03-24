@@ -28,6 +28,11 @@
       default = "";
       description = "Application usage description in markdown format.";
     };
+    links = lib.mkOption {
+      type = lib.types.submodule ./links.nix;
+      default = { };
+      description = "Links related to this project";
+    };
     grants = lib.mkOption {
       type = lib.types.submodule ./ngi/grants.nix;
       default = { };
