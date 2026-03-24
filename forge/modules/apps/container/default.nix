@@ -27,13 +27,6 @@
       type = lib.types.listOf lib.types.package;
       default = [ ];
       description = "List of packages to add to the container's `/bin` directory.";
-      apply =
-        self:
-        (pkgs.buildEnv {
-          name = "runtime-bins";
-          paths = self;
-          pathsToLink = [ "/bin" ];
-        });
     };
 
     # NOTE: config is reserved by the module system
@@ -87,7 +80,12 @@
   config = {
     result.nimi.config = {
       settings.container = {
-        copyToRoot = config.requirements;
+        copyToRoot = pkgs.buildEnv {
+          name = "runtime-bins";
+          paths = config.requirements;
+          pathsToLink = [ "/bin" ];
+        };
+
         imageConfig = config.imageConfig // {
           Env =
             let
