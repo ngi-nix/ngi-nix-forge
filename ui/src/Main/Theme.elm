@@ -2,22 +2,18 @@ module Main.Theme exposing (Theme(..), cycleTheme, themeFromString, themeToStrin
 
 
 type Theme
-    = Theme_Auto
-    | Theme_Dark
+    = Theme_Dark
     | Theme_Light
 
 
 cycleTheme : Theme -> Theme
 cycleTheme currentTheme =
     case currentTheme of
-        Theme_Auto ->
-            Theme_Light
-
         Theme_Light ->
             Theme_Dark
 
         Theme_Dark ->
-            Theme_Auto
+            Theme_Light
 
 
 themeFromString : String -> Theme
@@ -30,7 +26,7 @@ themeFromString str =
             Theme_Dark
 
         _ ->
-            Theme_Auto
+            Theme_Light
 
 
 themeToString : Theme -> String
@@ -41,6 +37,3 @@ themeToString theme =
 
         Theme_Dark ->
             "dark"
-
-        Theme_Auto ->
-            "auto"

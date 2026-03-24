@@ -9,7 +9,7 @@ import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Error
 import Main.Helpers.Html exposing (..)
-import Main.Icons exposing (circleHalf, moonStarsFill, search, sunFill)
+import Main.Icons exposing (moonStarsFill, search, sunFill)
 import Main.Model exposing (..)
 import Main.Nix exposing (showNixUrl)
 import Main.Route as Route exposing (..)
@@ -109,14 +109,11 @@ viewThemeToggle : Model -> Html Update
 viewThemeToggle model =
     span
         [ class "d-flex align-items-center ms-3"
-        , title "Toggle dark mode"
-        , attribute "aria-label" "Toggle dark mode"
+        , title "Toggle theme"
+        , attribute "aria-label" "Toggle theme"
         , onClick Update_CycleTheme
         ]
         [ case model.model_theme of
-            Theme_Auto ->
-                circleHalf
-
             Theme_Dark ->
                 moonStarsFill
 
