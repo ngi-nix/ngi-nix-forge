@@ -29,6 +29,16 @@
       description = "Application usage description in markdown format.";
     };
 
+    # NOTE: ideally, this should either:
+    # 1. be automatically populated from submodules (services, programs, ...)
+    # 2. populate the submodules from this option (attrsOf packages)
+    packages = lib.mkOption {
+      type = lib.types.listOf lib.types.attrs;
+      default = [ ];
+      description = "Forge packages used by the application.";
+      # TODO: assert that packages are internal to the forge?
+    };
+
     # Portable services configuration
     # https://nixos.org/manual/nixos/unstable/#modular-services
     services = lib.mkOption {
@@ -86,5 +96,36 @@
       default = { };
       description = "NixOS system configuration.";
     };
+  };
+
+  config = {
+    packages =
+      let
+        service-packages = lib.flatten (
+          lib.mapAttrsToList (name: value: value.passthru.raw.command) config.services
+        );
+
+        packages = service-packages ++ config.programs.requirements ++ config.container.requirements;
+      in
+      lib.pipe packages [
+        # NOTE: `unique` has an O(n^2) complexity
+        # - would that be an issue for our usecase?
+        # - could we perhaps do better?
+        (lib.unique)
+        (map (package: {
+          inherit (package)
+            pname
+            version
+            ;
+          meta = {
+            inherit (package.meta)
+              description
+              license
+              position
+              ;
+          };
+          storePath = package.outPath;
+        }))
+      ];
   };
 }
