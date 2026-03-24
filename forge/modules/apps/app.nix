@@ -28,6 +28,11 @@
       default = "";
       description = "Application usage description in markdown format.";
     };
+    grants = lib.mkOption {
+      type = lib.types.submodule ./ngi/grants.nix;
+      default = { };
+      description = "NGI grants supporting this project.";
+    };
 
     # Portable services configuration
     # https://nixos.org/manual/nixos/unstable/#modular-services
