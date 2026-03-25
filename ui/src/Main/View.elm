@@ -358,7 +358,7 @@ viewPageAppRun model pageApp =
                                 []
                             ]
                         , div [ class "modal-body" ]
-                            [ viewPageAppRunOuputs model pageApp
+                            [ viewPageAppRunOutputs model pageApp
                             , div [ class "tab-content mb-5 p-3 border rounded" ]
                                 [ viewPageAppInstructions model pageApp ]
                             ]
@@ -368,8 +368,8 @@ viewPageAppRun model pageApp =
             ]
 
 
-viewPageAppRunOuputs : Model -> PageApp -> Html Update
-viewPageAppRunOuputs model pageApp =
+viewPageAppRunOutputs : Model -> PageApp -> Html Update
+viewPageAppRunOutputs model pageApp =
     let
         enabled : AppOutput -> Bool
         enabled tab =
@@ -389,12 +389,12 @@ viewPageAppRunOuputs model pageApp =
          , AppOutput_VM
          ]
             |> List.filter enabled
-            |> List.map (viewPageAppRunOuput model pageApp)
+            |> List.map (viewPageAppRunOutput model pageApp)
         )
 
 
-viewPageAppRunOuput : Model -> PageApp -> AppOutput -> Html Update
-viewPageAppRunOuput model pageApp appOutput =
+viewPageAppRunOutput : Model -> PageApp -> AppOutput -> Html Update
+viewPageAppRunOutput model pageApp appOutput =
     li [ class "nav-item" ]
         [ Html.button
             [ class
