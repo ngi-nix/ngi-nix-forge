@@ -42,7 +42,7 @@ view model =
                 , style "flex-direction" "row"
                 , style "justify-content" "space-evenly"
                 ]
-                [ li [ class "nav-item me-3" ] [ viewOptionsLink ]
+                [ li [ class "nav-item me-3" ] [ viewRecipeOptionsLink ]
                 , model |> viewThemeToggle
                 ]
             ]
@@ -61,21 +61,6 @@ view model =
             [ class "mt-auto py-3 border-top" ]
             [ viewPoweredBy ]
         ]
-
-
-viewOptionsLink : Html Update
-viewOptionsLink =
-    a
-        [ href (Route_RecipeOptions { routeRecipeOptions_pattern = Just "" } |> Route.toString)
-        , style "color" "inherit"
-        , style "text-decoration" "none"
-        , style "cursor" "pointer"
-        , class "nav-link"
-        , title "View Options Docs"
-        , attribute "aria-label" "View Options Docs"
-        , onClick (Update_Route (Route_RecipeOptions { routeRecipeOptions_pattern = Just "" }))
-        ]
-        [ bookHalf ]
 
 
 viewTitle : Html Update
@@ -107,7 +92,7 @@ viewSearchInput model =
             , style "pointer-events" "none"
             , style "margin-left" "1.2rem"
             ]
-            [ search ]
+            [ iconSearch ]
         , input
             [ class "form-control bg-transparent"
             , style "padding-left" "2.5rem"
@@ -133,6 +118,21 @@ viewSearchInput model =
         ]
 
 
+viewRecipeOptionsLink : Html Update
+viewRecipeOptionsLink =
+    a
+        [ href (Route_RecipeOptions { routeRecipeOptions_pattern = Just "" } |> Route.toString)
+        , style "color" "inherit"
+        , style "text-decoration" "none"
+        , style "cursor" "pointer"
+        , class "nav-link"
+        , title "View Options Docs"
+        , attribute "aria-label" "View Options Docs"
+        , onClick (Update_Route (Route_RecipeOptions { routeRecipeOptions_pattern = Just "" }))
+        ]
+        [ iconBookHalf ]
+
+
 viewThemeToggle : Model -> Html Update
 viewThemeToggle model =
     span
@@ -143,10 +143,10 @@ viewThemeToggle model =
         ]
         [ case model.model_theme of
             Theme_Dark ->
-                moonStarsFill
+                iconMoonStarsFill
 
             Theme_Light ->
-                sunFill
+                iconSunFill
         ]
 
 

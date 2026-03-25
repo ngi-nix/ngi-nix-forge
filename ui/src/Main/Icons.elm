@@ -13,8 +13,8 @@ import Svg.Attributes exposing (class, d, fill, height, viewBox, width)
 -}
 
 
-moonStarsFill : Html msg
-moonStarsFill =
+iconMoonStarsFill : Html msg
+iconMoonStarsFill =
     svg
         [ width "16"
         , height "16"
@@ -33,8 +33,8 @@ moonStarsFill =
         ]
 
 
-sunFill : Html msg
-sunFill =
+iconSunFill : Html msg
+iconSunFill =
     svg
         [ width "16"
         , height "16"
@@ -49,8 +49,8 @@ sunFill =
         ]
 
 
-search : Html msg
-search =
+iconSearch : Html msg
+iconSearch =
     svg
         [ width "16"
         , height "16"
@@ -65,8 +65,8 @@ search =
         ]
 
 
-bookHalf : Html msg
-bookHalf =
+iconBookHalf : Html msg
+iconBookHalf =
     svg
         [ width "16"
         , height "16"
