@@ -12,7 +12,12 @@ in
 {
   options = {
     perSystem = mkPerSystemOption (
-      { config, pkgs, sharedBuildAttrs, ... }:
+      {
+        config,
+        pkgs,
+        sharedBuildAttrs,
+        ...
+      }:
       {
         options = {
           forge.packages = lib.mkOption {
@@ -61,7 +66,10 @@ in
 
                         This provides a simple smoke test to ensure the package was built correctly.
                       '';
-                      example = [ "myapp" "myapp.cli" ];
+                      example = [
+                        "myapp"
+                        "myapp.cli"
+                      ];
                     };
                     relaxDeps = lib.mkOption {
                       type = lib.types.either lib.types.bool (lib.types.listOf lib.types.str);
@@ -72,7 +80,10 @@ in
                         Use when the package requires specific versions but works fine with versions in nixpkgs.
                         Set to true to relax all dependencies, or provide a list of dependency names.
                       '';
-                      example = [ "click" "attrs" ];
+                      example = [
+                        "click"
+                        "attrs"
+                      ];
                     };
                     disabledTests = lib.mkOption {
                       type = lib.types.listOf lib.types.str;
@@ -82,7 +93,10 @@ in
 
                         Useful for disabling flaky or network-dependent tests.
                       '';
-                      example = [ "test_network" "test_integration" ];
+                      example = [
+                        "test_network"
+                        "test_integration"
+                      ];
                     };
                   };
                 };
@@ -103,7 +117,8 @@ in
                     # Derivation start
                     { }:
                     pkgs.python3Packages.buildPythonApplication (
-                      finalAttrs: {
+                      finalAttrs:
+                      {
                         pname = pkg.name;
                         version = pkg.version;
                         format = "pyproject";

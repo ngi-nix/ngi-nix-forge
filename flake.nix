@@ -11,6 +11,11 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
 
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     elm2nix = {
       url = "github:dwayne/elm2nix";
       inputs.nixpkgs.follows = "nixpkgs";

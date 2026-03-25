@@ -12,7 +12,12 @@ in
 {
   options = {
     perSystem = mkPerSystemOption (
-      { config, pkgs, sharedBuildAttrs, ... }:
+      {
+        config,
+        pkgs,
+        sharedBuildAttrs,
+        ...
+      }:
       {
         options = {
           forge.packages = lib.mkOption {
@@ -65,7 +70,8 @@ in
                     # Derivation start
                     { stdenv }:
                     stdenv.mkDerivation (
-                      finalAttrs: {
+                      finalAttrs:
+                      {
                         pname = pkg.name;
                         version = pkg.version;
                         src = sharedBuildAttrs.pkgSource pkg;

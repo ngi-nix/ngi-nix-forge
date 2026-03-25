@@ -1,4 +1,4 @@
-{ ... }:
+{ inputs, ... }:
 {
   perSystem =
     {
@@ -11,6 +11,8 @@
     }:
 
     {
+      formatter = (pkgs.callPackage ./formatter.nix { inherit inputs; }).package;
+
       devShells = {
         default = pkgs.mkShellNoCC {
           allowSubstitutes = false;
