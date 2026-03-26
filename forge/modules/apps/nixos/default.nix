@@ -163,13 +163,23 @@
         {
           # modular services
           system = {
-            services = lib.mapAttrs (
-              name: value:
-              lib.recursiveUpdate (lib.removeAttrs value [ "passthru" ]) {
-                systemd.mainExecStart = lib.escapeShellArgs value.process.argv;
-                systemd.service.environment = value.passthru.raw.environment;
-              }
-            ) app.services;
+            services = lib.pipe app.services [
+              # NixOS already defines `configData."*".path`, but other runtimes
+              # don't do that. Since it's a read-only option, we can't just
+              # change its priority, so here we just filter out any non-NixOS
+              # declarations of that option.
+              # TODO: is there a more robust way of doing this?
+              # configData."*".path -> remove
+              (lib.filterAttrsRecursive (name: value: name != "path"))
+              # pass env vars to systemd; escape args
+              (lib.mapAttrs (
+                name: value:
+                lib.recursiveUpdate (lib.removeAttrs value [ "passthru" ]) {
+                  systemd.mainExecStart = lib.escapeShellArgs value.process.argv;
+                  systemd.service.environment = value.passthru.raw.environment;
+                }
+              ))
+            ];
           };
 
           environment.variables = lib.concatMapAttrs (_: value: value.passthru.raw.environment) app.services;
