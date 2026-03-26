@@ -38,6 +38,12 @@
       '';
     };
 
+    startup = lib.mkOption {
+      type = lib.types.nullOr lib.types.pathInStore;
+      default = null;
+      description = "Path to binary to run once at startup.";
+    };
+
     composeFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
@@ -113,6 +119,8 @@
             envAttrsToList envList;
         };
       };
+
+      settings.startup.runOnStartup = config.startup;
 
       services = lib.mapAttrs (serviceName: service: {
         imports = [
