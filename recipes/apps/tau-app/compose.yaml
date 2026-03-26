@@ -1,0 +1,11 @@
+services:
+  tau-tower:
+    image: localhost/tau-tower:latest
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+    volumes:
+      - ./config.toml:/etc/tau/tower.toml
+      - ./password:/etc/credstore/tau.PASSWORD
+    profiles:
+      - services

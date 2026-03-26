@@ -1,0 +1,6 @@
+ip = "127.0.0.1"
+listen_port = 3001
+mount = "tau.ogg"
+mount_port = 3002
+password = "@password@"
+username = "alice"
