@@ -42,17 +42,9 @@ view model =
                 , style "flex-direction" "row"
                 , style "justify-content" "space-evenly"
                 ]
-                ((case model.model_page of
-                    Page_RecipeOptions _ ->
-                        []
-
-                    _ ->
-                        [ li [ class "nav-item me-3" ] [ viewRecipeOptionsLink ]
-                        ]
-                 )
-                    ++ [ model |> viewThemeToggle
-                       ]
-                )
+                [ li [ class "nav-item me-3" ] [ viewRecipeOptionsLink ]
+                , model |> viewThemeToggle
+                ]
             ]
         , div []
             (model.model_errors
