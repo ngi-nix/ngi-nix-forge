@@ -43,17 +43,8 @@
                 # Exclude non-recipe files
                 (lib.filter (file: lib.hasSuffix "/recipe.nix" file))
               ];
-
-              # Extend pkgs with mypkgs containing all Nix Forge packages
-              # This allows recipes to reference other packages via mypkgs
-              pkgsExtended = pkgs // {
-                mypkgs = config.packages;
-              };
-
-              # Call each recipe file with extended arguments
-              callRecipes = map (file: import file (args // { pkgs = pkgsExtended; }));
             in
-            callRecipes recipeFiles;
+            recipeFiles;
 
         # Load package and app recipes from configured directories
         packageRecipes = loadRecipes config.forge.recipeDirs.packages;

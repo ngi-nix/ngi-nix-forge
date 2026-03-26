@@ -35,7 +35,13 @@ in
                 Only one builder can be enabled per package by setting build.<builder>.enable = true.
               '';
               type = lib.types.listOf (
-                lib.types.submodule {
+                lib.types.submoduleWith {
+                  # Extend pkgs with mypkgs containing all Nix Forge packages
+                  # This allows recipes to reference other packages via mypkgs
+                  specialArgs.pkgs = pkgs.extend (final: prev: { mypkgs = config.packages; });
+
+                  modules = [
+                    {
                   options = {
                     # General configuration
                     name = lib.mkOption {
@@ -228,6 +234,8 @@ in
                       };
                     };
                   };
+                    }
+                  ];
                 }
               );
             };
