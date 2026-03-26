@@ -59,14 +59,17 @@
       apply =
         self:
         lib.mapAttrs (
-          _name: value:
-          let
-            command = if lib.isDerivation value.command then lib.getExe value.command else value.command;
-          in
-          {
-            process.argv = [ command ] ++ value.argv;
-            configData = value.configData;
-            passthru.raw = value;
+          _: service:
+          service
+          // {
+            result = {
+              process.argv =
+                let
+                  command = if lib.isDerivation service.command then lib.getExe service.command else service.command;
+                in
+                [ command ] ++ service.argv;
+              configData = service.configData;
+            };
           }
         ) self;
     };
@@ -106,9 +109,7 @@
   config = {
     packages =
       let
-        service-packages = lib.flatten (
-          lib.mapAttrsToList (name: value: value.passthru.raw.command) config.services
-        );
+        service-packages = lib.flatten (lib.mapAttrsToList (name: value: value.command) config.services);
 
         packages = service-packages ++ config.programs.requirements ++ config.container.requirements;
       in

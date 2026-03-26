@@ -173,16 +173,16 @@
               (lib.filterAttrsRecursive (name: value: name != "path"))
               # pass env vars to systemd; escape args
               (lib.mapAttrs (
-                name: value:
-                lib.recursiveUpdate (lib.removeAttrs value [ "passthru" ]) {
-                  systemd.mainExecStart = lib.escapeShellArgs value.process.argv;
-                  systemd.service.environment = value.passthru.raw.environment;
+                _: service:
+                lib.recursiveUpdate service.result {
+                  systemd.mainExecStart = lib.escapeShellArgs service.result.process.argv;
+                  systemd.service.environment = service.environment;
                 }
               ))
             ];
           };
 
-          environment.variables = lib.concatMapAttrs (_: value: value.passthru.raw.environment) app.services;
+          environment.variables = lib.concatMapAttrs (_: value: value.environment) app.services;
         }
         config.extraConfig
       ];

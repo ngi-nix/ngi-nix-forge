@@ -104,7 +104,7 @@
               # { K = "V"; } -> [ "K=V" ]
               envAttrsToList = attrs: lib.mapAttrsToList (n: v: "${n}=${v}") attrs;
 
-              appEnv = lib.concatMapAttrs (_: value: value.passthru.raw.environment) app.services;
+              appEnv = lib.concatMapAttrs (_: value: value.environment) app.services;
               containerEnv = envListToAttrs config.imageConfig.Env or [ ];
 
               # NOTE: we merge Attrs to remove duplicate keys
@@ -116,7 +116,7 @@
 
       services = lib.mapAttrs (serviceName: service: {
         imports = [
-          (lib.removeAttrs service [ "passthru" ])
+          service.result
           {
             options.nimi = lib.mkOption {
               type = with lib.types; lazyAttrsOf (attrsOf anything);
