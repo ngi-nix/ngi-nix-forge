@@ -18,34 +18,56 @@ in
         sharedBuildAttrs = {
           pkgSource =
             let
-              gitForges = {
-                # forge = fetchFunction
-                github = pkgs.fetchFromGitHub;
-                gitlab = pkgs.fetchFromGitLab;
+              fetchers = {
+                path = pkg: pkg.source.path;
+
+                git =
+                  pkg:
+                  let
+                    forges = {
+                      # forge = fetchFunction
+                      github = pkgs.fetchFromGitHub;
+                      gitlab = pkgs.fetchFromGitLab;
+                    };
+                    parts = lib.splitString ":" pkg.source.git;
+                    forge = lib.elemAt parts 0;
+                    pathParts = lib.splitString "/" (lib.elemAt parts 1);
+                    fetcher = forges.${forge} or null;
+                  in
+                  if fetcher != null then
+                    fetcher {
+                      owner = lib.elemAt pathParts 0;
+                      repo = lib.elemAt pathParts 1;
+                      rev = lib.elemAt pathParts 2;
+                      hash = pkg.source.hash;
+                    }
+                  else
+                    pkgs.fetchgit {
+                      url = pkg.source.git;
+                      hash = pkg.source.hash;
+                    }
+                    // lib.optionalAttrs (pkg.source ? tag) { inherit (pkg.source) tag; }
+                    // lib.optionalAttrs (pkg.source ? rev) { inherit (pkg.source) rev; };
+
+                url =
+                  pkg:
+                  pkgs.fetchurl {
+                    url = pkg.source.url;
+                    hash = pkg.source.hash;
+                  };
               };
+
+              # Determine which source type is used
+              sourceType =
+                pkg:
+                if pkg.source.path != null then
+                  "path"
+                else if pkg.source.git != null then
+                  "git"
+                else
+                  "url";
             in
-            pkg:
-            # 1. Use path if provided
-            if pkg.source.path != null then
-              pkg.source.path
-            # 2. Use git
-            else if pkg.source.git != null then
-              let
-                gitForge = lib.elemAt (lib.splitString ":" pkg.source.git) 0;
-                gitParams = lib.splitString "/" pkg.source.git;
-              in
-              gitForges.${gitForge} {
-                owner = lib.removePrefix "${gitForge}:" (lib.lists.elemAt gitParams 0);
-                repo = lib.lists.elemAt gitParams 1;
-                rev = lib.lists.elemAt gitParams 2;
-                hash = pkg.source.hash;
-              }
-            # 3. Fallback to tarball download
-            else
-              pkgs.fetchurl {
-                url = pkg.source.url;
-                hash = pkg.source.hash;
-              };
+            pkg: fetchers.${sourceType pkg} pkg;
 
           pkgPassthru = pkg: finalPkg: {
             test = pkgs.testers.runCommand {
