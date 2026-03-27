@@ -14,13 +14,13 @@
   license = lib.licenses.eupl12;
 
   source = {
-    path = pkgs.fetchgit {
-      url = "https://git.deuxfleurs.fr/Deuxfleurs/aerogramme/";
-      tag = "0.3.0";
-      hash = "sha256-ER+P/XGqNzTLwDLK5EBZq/Dl29ZZKl2FdxDb+oLEJ8Y=";
-    };
-    # url = "https://git.deuxfleurs.fr/Deuxfleurs/aerogramme/archive/0.3.0.tar.gz";
-    # hash = "";
+    # path = pkgs.fetchgit {
+    #   url = "https://git.deuxfleurs.fr/Deuxfleurs/aerogramme/";
+    #   tag = "0.3.0";
+    #   hash = "sha256-ER+P/XGqNzTLwDLK5EBZq/Dl29ZZKl2FdxDb+oLEJ8Y=";
+    # };
+    git = "git:https://git.deuxfleurs.fr/Deuxfleurs/aerogramme:3.0.0";
+    hash = "";
 
     patches = [
       ./0001-update-time-rs.patch
