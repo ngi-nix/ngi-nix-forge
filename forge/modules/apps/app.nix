@@ -104,6 +104,25 @@
       default = { };
       description = "NixOS system configuration.";
     };
+
+    # Test configuration
+    test = {
+      script = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = ''
+          Bash script to run application tests inside a NixOS machine.
+
+          The application's services are available in the machine.
+          Run with: nix build .#<app>.test
+        '';
+        example = lib.literalExpression ''
+          '''
+          curl -f http://localhost:5000/users
+          '''
+        '';
+      };
+    };
   };
 
   config = {

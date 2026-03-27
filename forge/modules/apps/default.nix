@@ -72,6 +72,21 @@ in
               # finalApp parameter is currently not used in this function
               app: finalApp:
               { }
+              // lib.optionalAttrs (app.test.script != "") {
+                test = pkgs.testers.runNixOSTest {
+                  name = "${app.name}-test";
+                  nodes.machine = {
+                    imports = app.nixos.result.modules;
+                    system.stateVersion = "25.11";
+                    environment.systemPackages = app.programs.requirements;
+                  };
+                  testScript = ''
+                    machine.start()
+                    machine.wait_for_unit("multi-user.target")
+                    machine.succeed("${pkgs.writeShellScript "${app.name}-test-script" app.test.script}")
+                  '';
+                };
+              }
               // lib.optionalAttrs app.container.enable { container = app.container.result.imageBuilder; }
               // lib.optionalAttrs app.nixos.enable { vm = app.nixos.result.build; };
 

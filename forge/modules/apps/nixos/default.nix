@@ -95,6 +95,13 @@
     };
 
     result = {
+      modules = lib.mkOption {
+        internal = true;
+        readOnly = true;
+        type = lib.types.listOf lib.types.anything;
+        description = "NixOS modules for the application's services and extra configuration.";
+      };
+
       eval = lib.mkOption {
         internal = true;
         readOnly = true;
@@ -123,6 +130,34 @@
   };
 
   config = {
+    result.modules = [
+      {
+        # modular services
+        system = {
+          services = lib.pipe app.services [
+            # NixOS already defines `configData."*".path`, but other runtimes
+            # don't do that. Since it's a read-only option, we can't just
+            # change its priority, so here we just filter out any non-NixOS
+            # declarations of that option.
+            # TODO: is there a more robust way of doing this?
+            # configData."*".path -> remove
+            (lib.filterAttrsRecursive (name: value: name != "path"))
+            # pass env vars to systemd; escape args
+            (lib.mapAttrs (
+              _: service:
+              lib.recursiveUpdate service.result {
+                systemd.mainExecStart = lib.escapeShellArgs service.result.process.argv;
+                systemd.service.environment = service.environment;
+              }
+            ))
+          ];
+        };
+
+        environment.variables = lib.concatMapAttrs (_: value: value.environment) app.services;
+      }
+      config.extraConfig
+    ];
+
     result.eval = inputs.nixpkgs.lib.nixosSystem {
       inherit system;
       modules = [
@@ -160,32 +195,8 @@
 
           system.stateVersion = "25.11";
         }
-        {
-          # modular services
-          system = {
-            services = lib.pipe app.services [
-              # NixOS already defines `configData."*".path`, but other runtimes
-              # don't do that. Since it's a read-only option, we can't just
-              # change its priority, so here we just filter out any non-NixOS
-              # declarations of that option.
-              # TODO: is there a more robust way of doing this?
-              # configData."*".path -> remove
-              (lib.filterAttrsRecursive (name: value: name != "path"))
-              # pass env vars to systemd; escape args
-              (lib.mapAttrs (
-                _: service:
-                lib.recursiveUpdate service.result {
-                  systemd.mainExecStart = lib.escapeShellArgs service.result.process.argv;
-                  systemd.service.environment = service.environment;
-                }
-              ))
-            ];
-          };
-
-          environment.variables = lib.concatMapAttrs (_: value: value.environment) app.services;
-        }
-        config.extraConfig
-      ];
+      ]
+      ++ config.result.modules;
     };
   };
 }
