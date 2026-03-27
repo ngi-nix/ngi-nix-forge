@@ -47,6 +47,8 @@
     enable = true;
     name = "python-web";
     requirements = [ pkgs.mypkgs.python-web ];
+    # Alternatively, we can re-use attributes with `config`:
+    #requirements = [ config.services.python-web.command ];
     composeFile = ./compose.yaml;
   };
 
