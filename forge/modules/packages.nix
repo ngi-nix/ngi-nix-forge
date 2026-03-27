@@ -252,7 +252,7 @@ in
             warnings = lib.flatten (
               map (pkg: [
                 {
-                  condition = pkg.source.hash == "";
+                  condition = pkg.source.hash == "" && pkg.source.path == null;
                   message = ''
                     Package '${pkg.name}': source.hash is empty.
                     Correct hash will be printed in the error message when package is built.
