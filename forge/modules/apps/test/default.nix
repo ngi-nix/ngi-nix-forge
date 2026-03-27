@@ -31,6 +31,17 @@
       '';
     };
 
+    testScript = lib.mkOption {
+      internal = true;
+      type = lib.types.str;
+      default = ''
+        machine.start()
+        machine.wait_for_unit("multi-user.target")
+        machine.succeed("${pkgs.writeShellScript "${app.name}-test-script" config.script}")
+      '';
+      description = "Python test script passed to the NixOS test driver.";
+    };
+
     result = {
       build = lib.mkOption {
         internal = true;
@@ -59,11 +70,7 @@
         system.stateVersion = "25.11";
         environment.systemPackages = app.programs.requirements ++ config.requirements;
       };
-      testScript = ''
-        machine.start()
-        machine.wait_for_unit("multi-user.target")
-        machine.succeed("${pkgs.writeShellScript "${app.name}-test-script" config.script}")
-      '';
+      inherit (config) testScript;
     };
   };
 }
