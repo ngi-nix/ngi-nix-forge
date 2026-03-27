@@ -8,6 +8,13 @@
 }:
 {
   options = {
+    requirements = lib.mkOption {
+      type = lib.types.listOf lib.types.package;
+      default = [ ];
+      description = "Additional packages required for running tests.";
+      example = lib.literalExpression "[ pkgs.curl pkgs.jq ]";
+    };
+
     script = lib.mkOption {
       type = lib.types.str;
       default = "";
@@ -50,7 +57,7 @@
       nodes.machine = {
         imports = app.nixos.result.modules;
         system.stateVersion = "25.11";
-        environment.systemPackages = app.programs.requirements;
+        environment.systemPackages = app.programs.requirements ++ config.requirements;
       };
       testScript = ''
         machine.start()
