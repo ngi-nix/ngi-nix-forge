@@ -43,10 +43,11 @@ in
                     }
                   else
                     pkgs.fetchgit {
-                      url = pkg.source.url;
-                      rev = lib.elemAt pathParts 2;
+                      url = pkg.source.git;
                       hash = pkg.source.hash;
-                    };
+                    }
+                    // lib.optionalAttrs (pkg.source ? tag) { inherit (pkg.source) tag; }
+                    // lib.optionalAttrs (pkg.source ? rev) { inherit (pkg.source) rev; };
 
                 url =
                   pkg:

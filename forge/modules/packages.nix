@@ -93,6 +93,16 @@ in
                         '';
                         example = "github:my-user/my-repo/v1.0.0";
                       };
+                      tag = lib.mkOption {
+                        type = lib.types.str;
+                        default = "";
+                        description = "";
+                      };
+                      rev = lib.mkOption {
+                        type = lib.types.str;
+                        default = "";
+                        description = "";
+                      };
                       url = lib.mkOption {
                         type = lib.types.nullOr (lib.types.strMatching "^.*://.*");
                         default = null;
