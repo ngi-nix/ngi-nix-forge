@@ -106,22 +106,14 @@
     };
 
     # Test configuration
-    test = {
-      script = lib.mkOption {
-        type = lib.types.str;
-        default = "";
-        description = ''
-          Bash script to run application tests inside a NixOS machine.
-
-          The application's services are available in the machine.
-          Run with: nix build .#<app>.test
-        '';
-        example = lib.literalExpression ''
-          '''
-          curl -f http://localhost:5000/users
-          '''
-        '';
+    test = lib.mkOption {
+      type = lib.types.submodule {
+        imports = [ ./test ];
+        _module.args.app = config;
+        _module.args.pkgs = pkgs;
       };
+      default = { };
+      description = "Test configuration.";
     };
   };
 
