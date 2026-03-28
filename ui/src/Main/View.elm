@@ -266,6 +266,7 @@ viewPageApp model pageApp =
                     , text " "
                     , small
                         [ class "text-muted"
+                        , style "font-style" "italic"
                         , style "font-size" "0.875rem"
                         ]
                         [ text ("v" ++ pageApp.pageApp_app.app_version) ]
