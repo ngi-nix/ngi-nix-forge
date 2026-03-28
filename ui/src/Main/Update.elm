@@ -10,6 +10,7 @@ import Main.Helpers.Cmd as Cmd
 import Main.Model exposing (..)
 import Main.Nix exposing (..)
 import Main.Ports.Clipboard as Clipboard
+import Main.Ports.FlakePreference as FlakePreference
 import Main.Ports.Navigation
 import Main.Ports.ThemeSwitch as ThemeSwitch
 import Main.Route as Route exposing (..)
@@ -35,6 +36,7 @@ type Update
       -- Useful in a `Update_Chain` to defer `up` after some other updates.
       Update_Updater Updater
     | Update_CycleTheme
+    | Update_SetFlakePreference Bool
     | Update_FocusResult (Result Dom.Error ())
     | Update_AmbientKeyPress AmbientKeyState
     | Update_SearchInput UpdateSearchInput
@@ -92,6 +94,11 @@ update upd model =
         Update_CopyToClipboard code ->
             ( model
             , Clipboard.copyToClipboard code
+            )
+
+        Update_SetFlakePreference value ->
+            ( model
+            , FlakePreference.saveFlakePreference value
             )
 
         Update_CycleTheme ->

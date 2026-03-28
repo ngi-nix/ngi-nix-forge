@@ -15,6 +15,7 @@ type alias Model =
     , model_errors : List Error
     , model_preferences :
         { pref_theme : Theme
+        , pref_flakes : Bool
         }
     , model_RecipeOptions : ModelRecipeOptions
     }
