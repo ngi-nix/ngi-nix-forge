@@ -7,6 +7,7 @@ import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Error exposing (..)
 import Main.Helpers.Cmd as Cmd
+import Main.Helpers.List as List
 import Main.Model exposing (..)
 import Main.Nix exposing (..)
 import Main.Ports.Clipboard as Clipboard
@@ -109,8 +110,16 @@ update upd model =
                     model
                         |> updateRoute
                             (case model.model_page of
-                                Page_RecipeOptions _ ->
-                                    Route_RecipeOptions { routeRecipeOptions_pattern = Nothing }
+                                Page_RecipeOptions pageRecipeOptions ->
+                                    let
+                                        routeRecipeOptions =
+                                            pageRecipeOptions.pageRecipeOptions_route
+                                    in
+                                    Route_RecipeOptions
+                                        { routeRecipeOptions
+                                            | routeRecipeOptions_pattern = Nothing
+                                            , routeRecipeOptions_page = 1
+                                        }
 
                                 _ ->
                                     Route_Search { routeSearch_pattern = "" }
@@ -122,8 +131,16 @@ update upd model =
                     model
                         |> updateRoute
                             (case model.model_page of
-                                Page_RecipeOptions _ ->
-                                    Route_RecipeOptions { routeRecipeOptions_pattern = Just search }
+                                Page_RecipeOptions pageRecipeOptions ->
+                                    let
+                                        routeRecipeOptions =
+                                            pageRecipeOptions.pageRecipeOptions_route
+                                    in
+                                    Route_RecipeOptions
+                                        { routeRecipeOptions
+                                            | routeRecipeOptions_pattern = Just search
+                                            , routeRecipeOptions_page = 1
+                                        }
 
                                 _ ->
                                     Route_Search { routeSearch_pattern = search }
@@ -135,8 +152,16 @@ update upd model =
                         |> update
                             (Update_Route
                                 (case model.model_page of
-                                    Page_RecipeOptions _ ->
-                                        Route_RecipeOptions { routeRecipeOptions_pattern = Just search }
+                                    Page_RecipeOptions pageRecipeOptions ->
+                                        let
+                                            routeRecipeOptions =
+                                                pageRecipeOptions.pageRecipeOptions_route
+                                        in
+                                        Route_RecipeOptions
+                                            { routeRecipeOptions
+                                                | routeRecipeOptions_pattern = Just search
+                                                , routeRecipeOptions_page = 1
+                                            }
 
                                     _ ->
                                         Route_Search { routeSearch_pattern = search }
@@ -188,7 +213,7 @@ update upd model =
                     ( { model
                         | model_RecipeOptions =
                             { modelRecipeOptions_available = options
-                            , modelRecipeOptions_filtered = options
+                            , modelRecipeOptions_filtered = options |> Dict.toList
                             }
                       }
                     , Cmd.none
@@ -305,15 +330,29 @@ updateRoute route =
 
                             search =
                                 routeRecipe.routeRecipeOptions_pattern |> Maybe.withDefault ""
+
+                            filtered =
+                                recipeOptions.modelRecipeOptions_available
+                                    |> Dict.filter (\name opt -> String.contains (search |> String.toLower) (name |> String.toLower))
+                                    |> Dict.toList
                         in
                         ( { model
-                            | model_page = Page_RecipeOptions { pageRecipeOptions_route = routeRecipe }
+                            | model_page =
+                                Page_RecipeOptions
+                                    { pageRecipeOptions_route = routeRecipe
+                                    , pageRecipeOptions_LastPage =
+                                        filtered
+                                            |> List.length
+                                            |> (\x -> (toFloat x / toFloat routeRecipe.routeRecipeOptions_MaxResultsPerPage) |> ceiling)
+                                    }
                             , model_search = search
                             , model_RecipeOptions =
                                 { recipeOptions
                                     | modelRecipeOptions_filtered =
-                                        recipeOptions.modelRecipeOptions_available
-                                            |> Dict.filter (\name opt -> String.contains (search |> String.toLower) (name |> String.toLower))
+                                        filtered
+                                            |> List.chunksOf routeRecipe.routeRecipeOptions_MaxResultsPerPage
+                                            |> List.at (routeRecipe.routeRecipeOptions_page - 1)
+                                            |> Maybe.withDefault []
                                 }
                           }
                         , Cmd.none

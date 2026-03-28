@@ -37,7 +37,10 @@ type alias RouteApp =
 
 
 type alias RouteRecipeOptions =
-    { routeRecipeOptions_pattern : Maybe NixName }
+    { routeRecipeOptions_pattern : Maybe NixName
+    , routeRecipeOptions_page : Int
+    , routeRecipeOptions_MaxResultsPerPage : Int
+    }
 
 
 initRouteApp : AppName -> RouteApp
@@ -119,7 +122,35 @@ fromAppUrl url =
             Ok
                 (Route_RecipeOptions
                     { routeRecipeOptions_pattern =
-                        url.queryParameters |> Dict.get "q" |> Maybe.andThen List.head
+                        url.queryParameters
+                            |> Dict.get "q"
+                            |> Maybe.andThen List.head
+                    , routeRecipeOptions_page =
+                        url.queryParameters
+                            |> Dict.get "page"
+                            |> Maybe.andThen List.head
+                            |> Maybe.andThen String.toInt
+                            |> Maybe.withDefault 0
+                            |> (\p ->
+                                    if p < 1 then
+                                        1
+
+                                    else
+                                        p
+                               )
+                    , routeRecipeOptions_MaxResultsPerPage =
+                        url.queryParameters
+                            |> Dict.get "MaxResultsPerPage"
+                            |> Maybe.andThen List.head
+                            |> Maybe.andThen String.toInt
+                            |> Maybe.withDefault 10
+                            |> (\p ->
+                                    if p < 1 then
+                                        1
+
+                                    else
+                                        p
+                               )
                     }
                 )
 
@@ -188,6 +219,22 @@ toAppUrl route =
 
                         Just q ->
                             [ q ]
+                  )
+                , ( "page"
+                  , case routeRecipe.routeRecipeOptions_page of
+                        1 ->
+                            []
+
+                        p ->
+                            [ p |> String.fromInt ]
+                  )
+                , ( "MaxResultsPerPage"
+                  , case routeRecipe.routeRecipeOptions_MaxResultsPerPage of
+                        1 ->
+                            []
+
+                        p ->
+                            [ p |> String.fromInt ]
                   )
                 ]
                     |> Dict.fromList
