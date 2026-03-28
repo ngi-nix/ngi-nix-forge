@@ -359,7 +359,17 @@ viewTabMetadata model pageApp =
     div [ class "row" ]
         [ -- Left Column: Funding (Subgrants)
           div [ class "col-md-6" ]
-            [ h5 [ class "mb-3" ] [ text "Funding" ]
+            [ h5
+                [ class "mb-3"
+                , id "funding"
+                ]
+                [ text "Funding"
+                , a
+                    [ class "anchor-link"
+                    , href "/app/python-web-app#funding"
+                    ]
+                    []
+                ]
             , viewPageAppNgiSubgrants model pageApp
             ]
 
@@ -449,7 +459,41 @@ viewPageAppNgiSubgrants model pageApp =
             ]
 
     else
-        text ""
+        div [ class "alert alert-warning" ]
+            [ p [] [ text "Funding information is missing for this application." ]
+            , p []
+                [ text "Please file an issue in our "
+                , a
+                    [ -- href "https://github.com/ngi-nix/forge/issues/new/choose"
+                      href
+                        (let
+                            repo =
+                                "https://github.com/phanirithvij/phanirithvij.github.io"
+
+                            deploymentBase =
+                                "https://ngi-nix.github.io/forge"
+
+                            route =
+                                "/issues/new"
+
+                            template =
+                                "?template=bug-report-missing-funding.yml"
+
+                            title =
+                                "python-web-app: Funding information missing in homepage"
+
+                            -- NOTE: encodeURIComponent("#")
+                            pageUrl =
+                                "/app/python-web-app%23funding"
+                         in
+                         repo ++ route ++ template ++ "&title=" ++ title ++ "&page-url=" ++ deploymentBase ++ pageUrl
+                        )
+                    , target "_blank"
+                    ]
+                    [ text "repository" ]
+                , text ". (requires a microsoft github account)"
+                ]
+            ]
 
 
 

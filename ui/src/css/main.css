@@ -131,3 +131,30 @@ a:link {
   text-decoration: none;
 }
 
+/* permalinks */
+.anchor-link {
+  padding: 0 0.175rem;
+  font-weight: 400;
+  color: #0d6efd80;
+  text-decoration: none;
+  opacity: 0;
+  transition:
+    color 0.15s ease-in-out,
+    opacity 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anchor-link {
+    transition: none;
+  }
+}
+.anchor-link:after {
+  content: "#";
+}
+.anchor-link:focus,
+.anchor-link:hover,
+:hover > .anchor-link,
+:target > .anchor-link {
+  color: #0d6efd;
+  text-decoration: none;
+  opacity: 1;
+}
