@@ -357,25 +357,8 @@ viewTabDescription model pageApp =
 viewTabMetadata : Model -> PageApp -> Html Update
 viewTabMetadata model pageApp =
     div [ class "row" ]
-        [ -- Left Column: Funding (Subgrants)
-          div [ class "col-md-6" ]
-            [ h5
-                [ class "mb-3"
-                , id "funding"
-                ]
-                [ text "Funding"
-                , a
-                    [ class "anchor-link"
-                    , href "/app/python-web-app#funding"
-                    ]
-                    []
-                ]
-            , viewPageAppNgiSubgrants model pageApp
-            ]
-
-        -- Right Column: Links
-        , div [ class "col-md-6" ]
-            [ h5 [ class "mb-3" ] [ text "Links" ]
+        [ div [ class "col-md-6" ]
+            [ h5 [ class "mb-3" ] [ text "Resources" ]
             , ul [ class "list-group list-group-flush" ]
                 [ li [ class "list-group-item bg-transparent px-0" ]
                     [ a [ href "#", target "_blank" ] [ text "Homepage" ] ]
@@ -384,6 +367,20 @@ viewTabMetadata model pageApp =
                 , li [ class "list-group-item bg-transparent px-0" ]
                     [ a [ href "#", target "_blank" ] [ text "Source Repository" ] ]
                 ]
+            ]
+        , div [ class "col-md-6" ]
+            [ h5
+                [ class "mb-3"
+                , id "funding"
+                ]
+                [ text "Funding"
+                , a
+                    [ class "anchor-link"
+                    , href "/app/python-web-app?runOutput=shell&tab=metadata#funding"
+                    ]
+                    []
+                ]
+            , viewPageAppNgiSubgrants model pageApp
             ]
         ]
 
@@ -451,7 +448,7 @@ viewPageAppNgiSubgrants model pageApp =
     in
     if hasAnyGrants subgrants then
         div [ class "subgrants-container mt-4" ]
-            [ p [] [ text "This project is funded by NLnet through these subgrants:" ]
+            [ p [ style "font-size" "0.875rem" ] [ text "This project is funded by NLnet through these subgrants:" ]
             , viewGrantCategory "Commons" subgrants.commons
             , viewGrantCategory "Core" subgrants.core
             , viewGrantCategory "Entrust" subgrants.entrust
