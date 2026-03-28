@@ -7,7 +7,7 @@ nix -L develop
 
 Alternatively, use [`direnv`](https://direnv.net/):
 ```bash
-echo "watch_dir flake/develop/\nuse nix" >.envrc
+echo -e "watch_dir flake/develop/\nuse nix" >.envrc
 direnv allow
 ```
 
