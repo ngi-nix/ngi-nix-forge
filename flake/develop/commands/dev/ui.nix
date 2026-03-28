@@ -2,10 +2,15 @@
 #   nix-shell --run 'dev-ui'
 {
   lib,
-  writeShellApplication,
+  which,
+  replaceVarsWith,
+  runtimeShell,
 }:
-(writeShellApplication {
+(replaceVarsWith {
   name = "dev-ui";
-  text = lib.readFile ./ui;
+  isExecutable = true;
+  dir = "bin";
+  src = ./ui.sh;
+  replacements = { inherit runtimeShell; };
   meta.description = "UI dev script";
 })

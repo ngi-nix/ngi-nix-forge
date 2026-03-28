@@ -13,6 +13,7 @@ lib.makeExtensible (self: {
     programs.actionlint.enable = true;
     programs.elm-format.enable = true;
     programs.nixfmt.enable = true;
+    programs.shfmt.enable = true;
 
     settings.formatter.editorconfig-checker = {
       command = pkgs.editorconfig-checker;

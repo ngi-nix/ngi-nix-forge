@@ -25,3 +25,4 @@ ui/src/options.js
 **/build/
 *.qcow2
 *.tar
+.envrc
