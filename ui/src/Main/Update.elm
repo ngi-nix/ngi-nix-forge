@@ -7,9 +7,10 @@ import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Error exposing (..)
 import Main.Helpers.Cmd as Cmd
+import Main.Helpers.Nix exposing (..)
 import Main.Model exposing (..)
-import Main.Nix exposing (..)
 import Main.Ports.Clipboard as Clipboard
+import Main.Ports.FlakePreference as FlakePreference
 import Main.Ports.Navigation
 import Main.Ports.ThemeSwitch as ThemeSwitch
 import Main.Route as Route exposing (..)
@@ -35,6 +36,7 @@ type Update
       -- Useful in a `Update_Chain` to defer `up` after some other updates.
       Update_Updater Updater
     | Update_CycleTheme
+    | Update_SetFlakePreference Bool
     | Update_FocusResult (Result Dom.Error ())
     | Update_AmbientKeyPress AmbientKeyState
     | Update_SearchInput UpdateSearchInput
@@ -94,12 +96,30 @@ update upd model =
             , Clipboard.copyToClipboard code
             )
 
+        Update_SetFlakePreference value ->
+            let
+                oldPrefs =
+                    model.model_preferences
+
+                newPrefs =
+                    { oldPrefs | pref_flakes = value }
+            in
+            ( { model | model_preferences = newPrefs }
+            , FlakePreference.saveFlakePreference value
+            )
+
         Update_CycleTheme ->
             let
                 nextTheme =
-                    cycleTheme model.model_theme
+                    cycleTheme model.model_preferences.pref_theme
+
+                oldPrefs =
+                    model.model_preferences
+
+                newPrefs =
+                    { oldPrefs | pref_theme = nextTheme }
             in
-            ( { model | model_theme = nextTheme }
+            ( { model | model_preferences = newPrefs }
             , ThemeSwitch.saveTheme (themeToString nextTheme)
             )
 

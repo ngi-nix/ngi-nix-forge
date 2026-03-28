@@ -3,7 +3,7 @@ module Main.Model exposing (..)
 import Main.Config exposing (..)
 import Main.Config.App exposing (..)
 import Main.Error exposing (..)
-import Main.Nix exposing (..)
+import Main.Helpers.Nix exposing (..)
 import Main.Route exposing (..)
 import Main.Theme exposing (Theme)
 
@@ -13,7 +13,10 @@ type alias Model =
     , model_search : String
     , model_page : Page
     , model_errors : List Error
-    , model_theme : Theme
+    , model_preferences :
+        { pref_theme : Theme
+        , pref_flakes : Bool
+        }
     , model_RecipeOptions : ModelRecipeOptions
     }
 

@@ -18,6 +18,7 @@ import Url
 type alias Flags =
     { href : String
     , theme : String
+    , prefersFlakes : Bool
     }
 
 
@@ -39,7 +40,10 @@ init flags =
             , model_search = ""
             , model_page = Page_Search
             , model_errors = []
-            , model_theme = themeFromString flags.theme
+            , model_preferences =
+                { pref_theme = themeFromString flags.theme
+                , pref_flakes = flags.prefersFlakes
+                }
             , model_RecipeOptions =
                 { modelRecipeOptions_available = Dict.empty
                 , modelRecipeOptions_filtered = Dict.empty

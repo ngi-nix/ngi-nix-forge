@@ -1,0 +1,14 @@
+name: "Funding information missing"
+labels: [ "nix-forge", "bug" ]
+description: "Report a missing funding page"
+body:
+  - type: textarea
+    id: page-url
+    attributes:
+      label: "Page URL"
+      description: "The page with missing funding info"
+  - type: "textarea"
+    id: additional-details
+    attributes:
+      label: "Additional details"
+      value: "Funding details are missing in this project's page."

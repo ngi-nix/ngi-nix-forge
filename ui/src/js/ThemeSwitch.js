@@ -12,11 +12,11 @@ const getInitialTheme = () => {
   return theme;
 };
 
-const initThemePorts = (app) => {
+const initThemePort = (app) => {
   app.ports.saveTheme.subscribe((theme) => {
     localStorage.setItem("theme", theme);
     setThemeAttribute(theme);
   });
 };
 
-export { getInitialTheme, initThemePorts };
+export { getInitialTheme, initThemePort };

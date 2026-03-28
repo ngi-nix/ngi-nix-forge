@@ -32,6 +32,13 @@
     ```
   '';
 
+  grants = {
+    Entrust = [ "Mox" ];
+    Commons = [ "PdfDing" ];
+    Core = [ "0WM" ];
+    Review = [ "Mox-API" ];
+  };
+
   programs = {
     enable = true;
     requirements = [

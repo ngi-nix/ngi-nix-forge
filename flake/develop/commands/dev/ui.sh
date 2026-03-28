@@ -24,6 +24,9 @@ set -ex
 
 mkdir -p "$rootDir/ui/build/js"
 
+# copy the favicon to build
+ln -s "$rootDir/ui/src/favicon.svg" "$rootDir/ui/build/favicon.svg"
+
 # Warning(correctness): when using `nix build`,
 # be careful to either register the resulting output(s)
 # in $rootDir/ui/build as roots to nix's garbage-collector (GC)

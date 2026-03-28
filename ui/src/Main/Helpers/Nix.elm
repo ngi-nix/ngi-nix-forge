@@ -1,4 +1,4 @@
-module Main.Nix exposing (..)
+module Main.Helpers.Nix exposing (..)
 
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder, field, string)
@@ -18,6 +18,11 @@ showNixUrl url =
 
     else
         url
+
+
+showGithubRepoSlug : NixUrl -> String
+showGithubRepoSlug url =
+    String.dropLeft 7 url
 
 
 type alias NixName =
