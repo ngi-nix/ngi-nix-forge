@@ -1,5 +1,5 @@
 import { init as initNavigationPort } from "./Navigation.js";
-import { getInitialTheme, initThemePorts } from "./ThemeSwitch.js";
+import { getInitialTheme, initThemePort } from "./ThemeSwitch.js";
 import { initClipboardListener } from "./Clipboard.js";
 
 const startingTheme = getInitialTheme();
@@ -17,6 +17,6 @@ initNavigationPort({
   onNavEvent: app.ports.onNavEvent,
 });
 
-initThemePorts(app);
 
 initClipboardListener(app);
+initThemePort(app);

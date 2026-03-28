@@ -97,9 +97,15 @@ update upd model =
         Update_CycleTheme ->
             let
                 nextTheme =
-                    cycleTheme model.model_theme
+                    cycleTheme model.model_preferences.pref_theme
+
+                oldPrefs =
+                    model.model_preferences
+
+                newPrefs =
+                    { oldPrefs | pref_theme = nextTheme }
             in
-            ( { model | model_theme = nextTheme }
+            ( { model | model_preferences = newPrefs }
             , ThemeSwitch.saveTheme (themeToString nextTheme)
             )
 
