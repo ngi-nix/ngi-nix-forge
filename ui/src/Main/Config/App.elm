@@ -112,3 +112,9 @@ showAppOutput r =
 
         AppOutput_VM ->
             "VM"
+
+
+type AppTab
+    = AppTab_Description
+    | AppTab_Metadata
+    | AppTab_Packages

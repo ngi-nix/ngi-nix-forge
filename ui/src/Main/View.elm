@@ -1,7 +1,7 @@
 module Main.View exposing (..)
 
 import Dict
-import Html exposing (Html, a, code, div, footer, h3, h5, h6, header, input, li, main_, nav, p, section, small, span, text, ul)
+import Html exposing (Html, a, code, div, footer, h3, h5, h6, header, hr, input, li, main_, nav, p, section, small, span, text, ul)
 import Html.Attributes exposing (attribute, class, href, id, name, placeholder, rel, style, tabindex, target, title, type_, value)
 import Html.Events exposing (onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
@@ -259,6 +259,7 @@ viewPageApp model pageApp =
             [ style "display" "flex"
             , style "justify-content" "space-between"
             , style "align-items" "center"
+            , class "mb-4"
             ]
             [ div []
                 [ h3 [ style "margin" "0" ]
@@ -282,17 +283,120 @@ viewPageApp model pageApp =
                 ]
                 [ text "Run" ]
             ]
-        , div
-            [ class "mb-4"
-            , style "margin-bottom" "1rem"
-            , style "border-bottom" "1px solid #dee2e6"
-            , style "padding-bottom" "0.5rem"
-            ]
-            [ text pageApp.pageApp_app.app_description ]
-        , viewPageAppNgiSubgrants model pageApp
-        , viewInstructionsUsage model pageApp
+        , viewPageAppTabs model pageApp
+        , viewPageAppTabContent model pageApp
         , viewRecipeLink model pageApp
         , viewPageAppRun model pageApp
+        ]
+
+
+viewPageAppTabs : Model -> PageApp -> Html Update
+viewPageAppTabs model pageApp =
+    let
+        activeTab =
+            pageApp.pageApp_route.routeApp_activeTab
+
+        tabLink : AppTab -> String -> Html Update
+        tabLink tab label =
+            li [ class "nav-item" ]
+                [ Html.button
+                    [ class "nav-link"
+                    , class
+                        (if activeTab == Just tab then
+                            "active"
+
+                         else
+                            ""
+                        )
+                    , style "cursor" "pointer"
+                    , style "background" "transparent"
+                    , let
+                        route =
+                            pageApp.pageApp_route
+                      in
+                      onClick (Update_Route (Route_App { route | routeApp_activeTab = Just tab }))
+                    ]
+                    [ text label ]
+                ]
+    in
+    ul [ class "nav nav-underline mb-4" ]
+        [ tabLink AppTab_Description "Description"
+        , tabLink AppTab_Metadata "Metadata"
+        , tabLink AppTab_Packages "Packages"
+        ]
+
+
+viewPageAppTabContent : Model -> PageApp -> Html Update
+viewPageAppTabContent model pageApp =
+    div [ class "tab-content mb-4" ]
+        [ case pageApp.pageApp_route.routeApp_activeTab of
+            Just tab ->
+                case tab of
+                    AppTab_Description ->
+                        viewTabDescription model pageApp
+
+                    AppTab_Metadata ->
+                        viewTabMetadata model pageApp
+
+                    AppTab_Packages ->
+                        viewTabPackages model pageApp
+
+            Nothing ->
+                viewTabDescription model pageApp
+        ]
+
+
+viewTabDescription : Model -> PageApp -> Html Update
+viewTabDescription model pageApp =
+    div []
+        [ p [ class "lead" ] [ text pageApp.pageApp_app.app_description ]
+        , viewInstructionsUsage model pageApp
+        ]
+
+
+viewTabMetadata : Model -> PageApp -> Html Update
+viewTabMetadata model pageApp =
+    div [ class "row" ]
+        [ -- Left Column: Funding (Subgrants)
+          div [ class "col-md-6" ]
+            [ h5 [ class "mb-3" ] [ text "Funding" ]
+            , viewPageAppNgiSubgrants model pageApp
+            ]
+
+        -- Right Column: Links
+        , div [ class "col-md-6" ]
+            [ h5 [ class "mb-3" ] [ text "Links" ]
+            , ul [ class "list-group list-group-flush" ]
+                [ li [ class "list-group-item bg-transparent px-0" ]
+                    [ a [ href "#", target "_blank" ] [ text "Homepage" ] ]
+                , li [ class "list-group-item bg-transparent px-0" ]
+                    [ a [ href "#", target "_blank" ] [ text "Documentation" ] ]
+                , li [ class "list-group-item bg-transparent px-0" ]
+                    [ a [ href "#", target "_blank" ] [ text "Source Repository" ] ]
+                ]
+            ]
+        ]
+
+
+viewTabPackages : Model -> PageApp -> Html Update
+viewTabPackages model pageApp =
+    -- Two column layout: List of packages on the left, details on the right
+    div [ class "row" ]
+        [ div [ class "col-md-4" ]
+            [ h6 [] [ text "Available Packages" ]
+            , div [ class "list-group" ]
+                [ Html.button [ class "list-group-item list-group-item-action active" ] [ text "example-package-1" ]
+                , Html.button [ class "list-group-item list-group-item-action" ] [ text "example-package-2" ]
+                ]
+            ]
+        , div [ class "col-md-8" ]
+            [ div [ class "card card-body" ]
+                [ h5 [] [ text "Package Details" ]
+                , p [ class "text-muted" ] [ text "Select a package on the left to view its details." ]
+
+                -- Placeholder for actual package detail view
+                ]
+            ]
         ]
 
 

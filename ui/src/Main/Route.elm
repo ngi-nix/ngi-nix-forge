@@ -33,6 +33,7 @@ type alias RouteApp =
       routeApp_name : AppName
     , routeApp_runShown : Bool
     , routeApp_runOutput : Maybe AppOutput
+    , routeApp_activeTab : Maybe AppTab
     }
 
 
@@ -45,6 +46,7 @@ initRouteApp name =
     { routeApp_name = name
     , routeApp_runShown = False
     , routeApp_runOutput = Nothing
+    , routeApp_activeTab = Just AppTab_Description
     }
 
 
@@ -112,6 +114,22 @@ fromAppUrl url =
                                                 _ ->
                                                     AppOutput_Shell
                                         )
+                            , routeApp_activeTab =
+                                url.queryParameters
+                                    |> Dict.get "tab"
+                                    |> Maybe.andThen List.uncons
+                                    |> Maybe.map
+                                        (\( output, _ ) ->
+                                            case output of
+                                                "metadata" ->
+                                                    AppTab_Metadata
+
+                                                "packages" ->
+                                                    AppTab_Packages
+
+                                                _ ->
+                                                    AppTab_Description
+                                        )
                             }
                         )
 
@@ -169,6 +187,22 @@ toAppUrl route =
 
                                 AppOutput_VM ->
                                     [ "vm" ]
+                  )
+                , ( "tab"
+                  , case routeApp.routeApp_activeTab of
+                        Nothing ->
+                            []
+
+                        Just output ->
+                            case output of
+                                AppTab_Metadata ->
+                                    [ "metadata" ]
+
+                                AppTab_Description ->
+                                    [ "description" ]
+
+                                AppTab_Packages ->
+                                    [ "packages" ]
                   )
                 ]
                     |> Dict.fromList
