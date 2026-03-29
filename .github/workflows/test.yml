@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # - name: Get more storage space
       #   uses: wimpysworld/nothing-but-nix@main
@@ -22,9 +22,21 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@19effe9fe722874e6d46dd7182e4b8b7a43c4a99 # v31.10.0
 
-      - uses: cachix/cachix-action@v16
+      - name: Setup Cachix (Staging)
+        if: github.event_name == 'pull_request'
+        uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
+        with:
+          name: ngi-untrusted
+          extraPullNames: flake-forge
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN_UNTRUSTED }}'
+
+      - name: Setup Cachix
+        if: github.event_name != 'pull_request'
+        uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           name: flake-forge
+          extraPullNames: ngi-untrusted
+          useDaemon: false # IMPORTANT: Allows pushing substituted paths, see cachix action readme
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: Run checks
