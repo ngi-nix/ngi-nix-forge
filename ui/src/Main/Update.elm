@@ -232,7 +232,7 @@ updateRoute route =
                                                 { pageApp_route =
                                                     { routeApp
                                                         | routeApp_runOutput =
-                                                            [ if app.app_programs.enable then
+                                                            [ if app.app_shell.enable then
                                                                 [ AppOutput_Shell ]
 
                                                               else
@@ -260,7 +260,7 @@ updateRoute route =
                                         appHasRequestedOutput =
                                             case output of
                                                 AppOutput_Shell ->
-                                                    app.app_programs.enable
+                                                    app.app_shell.enable
 
                                                 AppOutput_Container ->
                                                     app.app_container.enable

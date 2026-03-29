@@ -28,9 +28,7 @@ type alias RouteSearch =
 
 
 type alias RouteApp =
-    { -- | Remark(simplicity): this should be `Either` instead of `Result`,
-      -- but this requires https://github.com/toastal/either
-      routeApp_name : AppName
+    { routeApp_name : AppName
     , routeApp_runShown : Bool
     , routeApp_runOutput : Maybe AppOutput
     }

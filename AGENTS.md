@@ -326,18 +326,18 @@ build.extraDrvAttrs = {
   usage = "Usage instructions in markdown...";  # Optional but helpful
 
   # Enable output types (at least one must be enabled):
-  programs = { ... };    # Shell bundle
-  containers = { ... };  # Docker containers
-  vm = { ... };         # NixOS VM
+  shell = { ... };      # Shell
+  container = { ... };  # Docker containers
+  vm = { ... };      # NixOS VM
 }
 ```
 
-**IMPORTANT:** Apps are always included in the packages output. However, individual outputs (programs bundle, containers, VM) are only generated when their respective `enable` option is set to `true`. If all three options are disabled, the app package will be available but will have no functional outputs.
+**IMPORTANT:** Apps are always included in the packages output. However, individual outputs (shell, container, NixOS) are only generated when their respective `enable` option is set to `true`. If all three options are disabled, the app package will be available but will have no functional outputs.
 
 ### Programs (Shell Bundle)
 ```nix
-programs = {
-  enable = true;  # Set to true to enable programs bundle output
+shell = {
+  enable = true;  # Set to true to enable shell output
   requirements = [
     pkgs.mypkgs.my-package  # Reference packages from forge
     pkgs.curl
@@ -347,7 +347,7 @@ programs = {
 
 ### Containers
 ```nix
-containers = {
+container = {
   enable = true;  # Set to true to enable container images output
   images = [
     {
@@ -383,8 +383,8 @@ vm = {
 
 Each app output type can be independently enabled or disabled:
 
-- **programs.enable**: Controls the base programs bundle (accessed via `nix build .#<app>`)
-- **containers.enable**: Controls the container images output (accessed via `nix build .#<app>.containers`)
+- **shell.enable**: Controls the base shell bundle (accessed via `nix shell .#<app>`)
+- **container.enable**: Controls the container images output (accessed via `nix build .#<app>.containers`)
 - **vm.enable**: Controls the virtual machine output (accessed via `nix build .#<app>.vm`)
 
 **Example with selective outputs:**
@@ -394,12 +394,12 @@ Each app output type can be independently enabled or disabled:
   version = "1.0.0";
   description = "Example app with selective outputs.";
 
-  programs = {
+  shell = {
     enable = true;  # Programs bundle will be built
     requirements = [ pkgs.hello ];
   };
 
-  containers = {
+  container = {
     enable = false;  # Container images will NOT be built
     images = [ /* ... */ ];
   };

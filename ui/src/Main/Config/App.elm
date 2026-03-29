@@ -8,13 +8,13 @@ type alias App =
     , app_description : String
     , app_version : String
     , app_usage : String
-    , app_programs : AppPrograms
+    , app_shell : AppShell
     , app_container : AppContainer
     , app_vm : AppNixosVm
     }
 
 
-type alias AppPrograms =
+type alias AppShell =
     { enable : Bool
     }
 
@@ -40,7 +40,7 @@ decodeApp =
         (Decode.field "description" Decode.string)
         (Decode.field "version" Decode.string)
         (Decode.field "usage" Decode.string)
-        (Decode.field "programs" decodeAppPrograms)
+        (Decode.field "shell" decodeAppShell)
         (Decode.field "container" decodeAppContainer)
         (Decode.field "nixos" decodeAppNixosVm)
 
@@ -58,9 +58,9 @@ decodeAppName =
             )
 
 
-decodeAppPrograms : Decoder AppPrograms
-decodeAppPrograms =
-    Decode.map AppPrograms
+decodeAppShell : Decoder AppShell
+decodeAppShell =
+    Decode.map AppShell
         (Decode.field "enable" Decode.bool)
 
 

@@ -32,7 +32,7 @@
     ```
   '';
 
-  programs = {
+  shell = {
     enable = true;
     requirements = [
       pkgs.curl

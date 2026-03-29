@@ -42,7 +42,7 @@
       // (passthruAttr "test")
 
       # All apps passthru attributes
-      // (passthruAttr "programs")
+      // (passthruAttr "shell")
       // (passthruAttr "container")
       // (passthruAttr "vm");
     };

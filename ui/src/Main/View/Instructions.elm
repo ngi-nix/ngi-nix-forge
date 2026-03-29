@@ -66,7 +66,7 @@ viewPageAppInstructions model pageApp =
                     div []
                         [ case output of
                             AppOutput_Shell ->
-                                if pageApp.pageApp_app.app_programs.enable then
+                                if pageApp.pageApp_app.app_shell.enable then
                                     div []
                                         [ p [ style "margin-bottom" "0em" ] [ text "Enter a shell environment with CLI and GUI programs." ]
                                         , br [] []
@@ -127,8 +127,8 @@ viewPageAppInstructions model pageApp =
                         ]
     in
     div []
-        [ if not pageApp.pageApp_app.app_programs.enable && not pageApp.pageApp_app.app_container.enable && not pageApp.pageApp_app.app_vm.enable then
-            p [ style "color" "red" ] [ text "No output is enabled for this pageApp.pageApp_app.app_ Enable at least one of the - programs, container or nixos vm - in recipe file." ]
+        [ if not pageApp.pageApp_app.app_shell.enable && not pageApp.pageApp_app.app_container.enable && not pageApp.pageApp_app.app_vm.enable then
+            p [ style "color" "red" ] [ text "No output is enabled for this pageApp.pageApp_app.app_ Enable at least one of the - programs, container or NixOS VM - in recipe file." ]
 
           else
             text ""

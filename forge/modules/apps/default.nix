@@ -60,7 +60,7 @@ in
               let
                 appDrv = pkgs.symlinkJoin {
                   name = "${app.name}-${app.version}";
-                  paths = app.programs.requirements;
+                  paths = app.shell.requirements;
                 };
               in
               # Passthru

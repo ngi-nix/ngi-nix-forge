@@ -10,7 +10,7 @@
   version = "1.0.0";
   description = "Say hello in multiple languages.";
 
-  programs = {
+  shell = {
     enable = true;
     requirements = [
       pkgs.mypkgs.hello

@@ -5,7 +5,7 @@
 {
   options = {
     enable = lib.mkEnableOption ''
-      Programs bundle output.
+      Shell output.
     '';
     requirements = lib.mkOption {
       type = lib.types.listOf lib.types.package;
