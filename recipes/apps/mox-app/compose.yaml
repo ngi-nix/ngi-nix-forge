@@ -1,0 +1,17 @@
+services:
+  mox:
+    image: localhost/mox:latest
+    ports:
+      - "25:25"
+      - "80:80"
+      - "443:443"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+    volumes:
+      - mox-data:/var/lib/mox
+    profiles:
+      - services
+
+volumes:
+  mox-data:
